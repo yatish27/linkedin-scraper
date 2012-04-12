@@ -71,42 +71,6 @@ Then you can see the scraped data like this:
   #        :company => "Better Labs"
   #    },
   
-= Examples
-
-When a link is given, it scrapes the profile and gets the data 
-
-  attr_accessor :country = "India",
-    attr_accessor :current_companies = [
-        [0] {
-            :current_company => "Better Labs",
-              :current_title => "Software Engineer Core Platform"
-        }
-    ],
-  attr_accessor :first_name = "Yatish",
-  attr_accessor :industry = "Information Technology and Services",
-  attr_accessor :last_name = "Mehta",
-  attr_accessor :linkedin_url = "http://in.linkedin.com/pub/yatish-mehta/22/460/a86",
-  attr_accessor :location = "Pune",
-  attr_accessor :past_companies = [
-      [0] {
-          :past_company => "Consumyze Software",
-            :past_title => "Trainee"
-      },
-      [1] {
-          :past_company => "SunGard Global Services",
-            :past_title => "Project Intern"
-      }
-  ],
-  attr_accessor :recommended_visitors = [
-      [0] {
-             :link =>  href="http://in.linkedin.com/in/nileshavhad?trk=pub-pbmap",
-             :name => "Nilesh Avhad",
-            :title => "Engineering Manager",
-          :company => "Better Labs"
-      },
-    ],
-    attr_accessor :title = "Software Engineer Core Platform at BetterLabs"
-
 
 = ZOMG Fork! Thank you!
 
