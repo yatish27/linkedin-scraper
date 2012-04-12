@@ -1,0 +1,104 @@
+= Linkedin-Scraper {<img src="http://travis-ci.org/jaimeiniesta/metainspector.png" />}[http://travis-ci.org/jaimeiniesta/metainspector]
+
+Linkedin-scraper is a gem for scraping linkedin public profiles. You give it an URL, and it lets you easily get its title,name,country,area,current_companies .
+
+= Installation
+
+Install the gem from RubyGems:
+
+  gem install linkedin-scraper
+
+This gem is tested on Ruby versions 1.8.7, 1.9.2 and 1.9.3.
+
+= Usage
+
+Initialize a scraper instance for an URL, like this:
+
+  profile = Linkedin::Scraper.get_profile('http://in.linkedin.com/pub/yatish-mehta/22/460/a86')
+
+Then you can see the scraped data like this:
+
+ 
+  profile.first_name          #the First name of the contact
+    
+  profile.last_name           #the last name of the contact
+    
+  profile.title               #the linkedin job title
+    
+  profile.location            #the location of the contact
+    
+  profile.country             #the country of the contact
+    
+  profile.industry            #the domain for which the contact belongs
+    
+  profile.past_companies
+  #Array of hash containing its past job companies and job profile
+  #Example
+  #  [
+  #    [0] {
+  #          :past_title => "Intern",
+  #        :past_company => "Sungard"
+  #        },
+  #    [1] {
+  #          :past_title => "Software Developer",
+  #        :past_company => "Microsoft"
+  #        }
+  #  ]
+  profile.current_companies
+  #Array of hash containing its current job companies and job profile
+  #Example
+  #  [
+  #    [0] {
+  #          :current_title => "Intern",
+  #        :current_company => "Sungard"
+  #        },
+  #    [1] {
+  #          :current_title => "Software Developer",
+  #        :current_company => "Microsoft"
+  #        }
+  #  ]
+    
+    
+  profile.linkedin_url        #url of the profile
+    
+  profile.recommended_visitors
+
+= Examples
+
+When a link is given, it scrapes the profile and gets the data 
+
+  $ irb
+  >> require 'metainspector'
+  => true
+
+  >> page = MetaInspector.new('http://pagerankalert.com')
+  => #<MetaInspector:0x11330c0 @url="http://pagerankalert.com">
+
+  >> page.title
+  => "PageRankAlert.com :: Track your PageRank changes"
+
+  >> page.meta_description
+  => "Track your PageRank(TM) changes and receive alerts by email"
+
+  >> page.meta_keywords
+  => "pagerank, seo, optimization, google"
+
+  >> page.links.size
+  => 8
+
+  >> page.links[5]
+  => "http://pagerankalert.posterous.com"
+
+  >> page.document.class
+  => String
+
+  >> page.parsed_document.class
+  => Nokogiri::HTML::Document
+
+= ZOMG Fork! Thank you!
+
+You're welcome to fork this project and send pull requests. I want to thank specially:
+
+= To Do
+* 
+Copyright (c) 2009-2012 Yatish Mehta, released under the MIT license
