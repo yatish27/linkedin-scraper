@@ -78,4 +78,4 @@ You're welcome to fork this project and send pull requests. I want to thank spec
 
 = To Do
 * 
-Copyright (c) 2009-2012 Yatish Mehta, released under the MIT license
+Copyright (c) 2009-2012 sagar junnarkar, released under the MIT license
