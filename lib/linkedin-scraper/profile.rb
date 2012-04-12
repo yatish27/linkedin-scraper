@@ -63,7 +63,7 @@ module Linkedin
       @linkedin_url=url
     end
     #returns:nil if it gives a 404 request
-    def get_profile url
+    def self.get_profile url
       begin
         @agent=Mechanize.new
         @agent.user_agent_alias = USER_AGENTS.sample
