@@ -14,7 +14,7 @@ This gem is tested on Ruby versions 1.8.7, 1.9.2 and 1.9.3.
 
 Initialize a scraper instance for an URL, like this:
 
-  profile = Linkedin::Scraper.get_profile('http://in.linkedin.com/pub/yatish-mehta/22/460/a86')
+  profile = Linkedin::Profile.get_profile('http://in.linkedin.com/pub/yatish-mehta/22/460/a86')
 
 Then you can see the scraped data like this:
 
@@ -62,38 +62,51 @@ Then you can see the scraped data like this:
   profile.linkedin_url        #url of the profile
     
   profile.recommended_visitors
-
+  #Its the list of visitors "Viewers of this profile also viewed..."
+  #attr_accessor :recommended_visitors = [
+  #    [0] {
+  #           :link =>  href="http://in.linkedin.com/in/nileshavhad?trk=pub-pbmap",
+  #           :name => "Nilesh Avhad",
+  #          :title => "Engineering Manager",
+  #        :company => "Better Labs"
+  #    },
+  
 = Examples
 
 When a link is given, it scrapes the profile and gets the data 
 
-  $ irb
-  >> require 'metainspector'
-  => true
+  attr_accessor :country = "India",
+    attr_accessor :current_companies = [
+        [0] {
+            :current_company => "Better Labs",
+              :current_title => "Software Engineer Core Platform"
+        }
+    ],
+  attr_accessor :first_name = "Yatish",
+  attr_accessor :industry = "Information Technology and Services",
+  attr_accessor :last_name = "Mehta",
+  attr_accessor :linkedin_url = "http://in.linkedin.com/pub/yatish-mehta/22/460/a86",
+  attr_accessor :location = "Pune",
+  attr_accessor :past_companies = [
+      [0] {
+          :past_company => "Consumyze Software",
+            :past_title => "Trainee"
+      },
+      [1] {
+          :past_company => "SunGard Global Services",
+            :past_title => "Project Intern"
+      }
+  ],
+  attr_accessor :recommended_visitors = [
+      [0] {
+             :link =>  href="http://in.linkedin.com/in/nileshavhad?trk=pub-pbmap",
+             :name => "Nilesh Avhad",
+            :title => "Engineering Manager",
+          :company => "Better Labs"
+      },
+    ],
+    attr_accessor :title = "Software Engineer Core Platform at BetterLabs"
 
-  >> page = MetaInspector.new('http://pagerankalert.com')
-  => #<MetaInspector:0x11330c0 @url="http://pagerankalert.com">
-
-  >> page.title
-  => "PageRankAlert.com :: Track your PageRank changes"
-
-  >> page.meta_description
-  => "Track your PageRank(TM) changes and receive alerts by email"
-
-  >> page.meta_keywords
-  => "pagerank, seo, optimization, google"
-
-  >> page.links.size
-  => 8
-
-  >> page.links[5]
-  => "http://pagerankalert.posterous.com"
-
-  >> page.document.class
-  => String
-
-  >> page.parsed_document.class
-  => Nokogiri::HTML::Document
 
 = ZOMG Fork! Thank you!
 
