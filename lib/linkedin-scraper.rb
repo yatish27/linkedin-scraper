@@ -4,7 +4,7 @@ require "mechanize"
 require "awesome_print"
 
 %w(client contact profile).each do |file|
-  require File.join(File.dirname(__FILE__), 'linkedin', file)
+  require File.join(File.dirname(__FILE__), 'linkedin-scraper', file)
 end
 
 
