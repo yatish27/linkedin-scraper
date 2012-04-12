@@ -5,8 +5,8 @@ Gem::Specification.new do |gem|
   gem.authors       = ["Yatish Mehta"]
   gem.email         = ["yatishmehta27@gmail.com"]
   gem.description   = %q{Scrapes the linkedin profile when a url is given }
-  gem.summary       = %q{Write a gem summary}
-  gem.homepage      = ""
+  gem.summary       = %q{when a url of  public linkedin profile page is given it scrapes the entire page and converts into a accessible object}
+  gem.homepage      = "https://github.com/yatishmehta27/linkedin-scraper"
    gem.add_dependency(%q<httparty>, [">= 0"])
 gem.add_dependency(%q<mechanize>, [">= 0"])
 gem.add_dependency(%q<awesome_print>, [">= 0"])
