@@ -1,23 +1,9 @@
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
 module Linkedin
 
   class Contact
-    #the First name of the contact
-    attr_accessor :first_name
-    #the last name of the contact
-    attr_accessor :last_name
-    #the linkedin job title
-    attr_accessor :title
-    #the location of the contact
-    attr_accessor :location
-    #the country of the contact
-    attr_accessor :country
-    #the domain for which the contact belongs
-    attr_accessor :industry
-    #the entire profile of the contact
+    attr_accessor :first_name, :last_name, :title, :location, :country, :industry, :current_companies, :linkedin_url
     attr_accessor :profile
-
+    
     #Array of hash containing its past job companies and job profile
     #Example
     #  [
@@ -32,6 +18,7 @@ module Linkedin
     #  ]
 
     attr_accessor :past_companies
+
     #Array of hash containing its current job companies and job profile
     #Example
     #  [
@@ -44,23 +31,21 @@ module Linkedin
     #        :current_company => "Microsoft"
     #        }
     #  ]
-    attr_accessor :current_companies
 
-    attr_accessor :linkedin_url
-
-    attr_accessor :profile
-  
-    def initialize(node=[])
-      unless node.class==Array
-        @first_name=get_first_name(node)
-        @last_name=get_last_name(node)
-        @title=get_title(node)
-        @location=get_location(node)
-        @country=get_country(node)
-        @industry=get_industry(node)
-        @current_companies=get_current_companies node
-        @past_companies=get_past_companies node
-        @linkedin_url=get_linkedin_url node
+    # As we are finding information from node all getters and setters should be defined on node
+    # For eg. node.first_name
+    def initialize(node = [])
+      unless node.class == Array
+        #why to call the method if node doesn't contain .given-name
+        @first_name = get_first_name node if node.search(".given-name").first
+        @last_name = get_last_name node if node.search(".family-name").first
+        @title = get_title node if node.search(".title").first
+        @location = get_location node if node.search(".location").first
+        @country = get_country node if node.search(".location").first
+        @industry = get_industry node if node.search(".industry").first
+        @current_companies = get_current_companies node
+        @past_companies = get_past_companies node
+        @linkedin_url = get_linkedin_url node
       end
     end
     #page is a Nokogiri::XML node of the profile page
@@ -71,30 +56,36 @@ module Linkedin
 
     private
 
+    def get_dynamic(node_at, modifier)
+      #node_at will change each time
+      # #modifier will contain how to manipulate text, for eg; strip or gsub etc;
+      at(node_at).text.#{modifier}
+    end
+
     def get_first_name node
-      return node.at(".given-name").text.strip if node.search(".given-name").first
+       node.at(".given-name").text.strip
     end
 
     def get_last_name node
-      return node.at(".family-name").text.strip if node.search(".family-name").first
+       node.at(".family-name").text.strip
     end
 
     def get_title node
-      return node.at(".title").text.gsub(/\s+/, " ").strip if node.search(".title").first
+       node.at(".title").text.gsub(/\s+/, " ").strip
     end
 
     def get_location node
-      return node.at(".location").text.split(",").first.strip if node.search(".location").first
+       node.at(".location").text.split(",").first.strip
 
     end
 
     def get_country node
-      return node.at(".location").text.split(",").last.strip if node.search(".location").first
+       node.at(".location").text.split(",").last.strip
 
     end
 
     def get_industry node
-      return node.at(".industry").text.strip if node.search(".industry").first
+       node.at(".industry").text.strip
     end
 
     def get_linkedin_url node
@@ -102,16 +93,16 @@ module Linkedin
     end
 
     def get_current_companies node
-      current_cs=[]
+      current_cs = []
       if node.search(".current-content").first
         node.at(".current-content").text.split(",").each do |content|
-          title,company=content.split(" at ")
-          company=company.gsub(/\s+/, " ").strip if company
-          title=title.gsub(/\s+/, " ").strip if title
-          current_company={:current_company=>company,:current_title=> title}
-          current_cs<<current_company
+          title, company = content.split(" at ")
+          company = company.gsub(/\s+/, " ").strip if company
+          title = title.gsub(/\s+/, " ").strip if title
+          current_company = {:current_company => company, :current_title => title}
+          current_cs << current_company
         end
-        return current_cs
+        current_cs
       end
     end
 
@@ -119,16 +110,15 @@ module Linkedin
       past_cs=[]
       if node.search(".past-content").first
         node.at(".past-content").text.split(",").each do |content|
-          title,company=content.split(" at ")
-          company=company.gsub(/\s+/, " ").strip if company
-          title=title.gsub(/\s+/, " ").strip if title
-          past_company={:past_company=>company,:past_title=> title }
-          past_cs<<past_company
+          title,company = content.split(" at ")
+          company = company.gsub(/\s+/, " ").strip if company
+          title = title.gsub(/\s+/, " ").strip if title
+          past_company = {:past_company => company, :past_title => title }
+          past_cs << past_company
         end
-        return past_cs
+        past_cs
       end
     end
-
   end
-
+end
 end
