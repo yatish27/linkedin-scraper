@@ -1,22 +1,11 @@
-# To change this template, choose Tools | Templates
-# and open the template in the editor.
+USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
 module Linkedin
-  class Profile
-    USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
+  class Profile    
     #the First name of the contact
-    attr_accessor :first_name
-    #the last name of the contact
-    attr_accessor :last_name
-    #the linkedin job title
-    attr_accessor :title
-    #the location of the contact
-    attr_accessor :location
-    #the country of the contact
-    attr_accessor :country
-    #the domain for which the contact belongs
-    attr_accessor :industry
-    #the entire profile of the contact
-    attr_accessor :profile
+    attr_accessor :first_name,:last_name,:title,:location,:country,
+                  :industry, :linkedin_url,:recommended_visitors,:profile,
+                  :page
+
 
     #Array of hash containing its past job companies and job profile
     #Example
@@ -46,9 +35,7 @@ module Linkedin
     #  ]
     attr_accessor :current_companies
     #url of the profile
-    attr_accessor :linkedin_url
-    #Array of hash containing its recommended visitors which come on the
-    attr_accessor :recommended_visitors
+
 
     def initialize(page,url)   
       @first_name=get_first_name(page)
@@ -68,8 +55,8 @@ module Linkedin
         @agent=Mechanize.new
         @agent.user_agent_alias = USER_AGENTS.sample
         @agent.max_history = 0
-        page=@agent.get url
-        return Linkedin::Profile.new(page, url)
+        @page=@agent.get url
+        return Linkedin::Profile.new(@page, url)
       rescue=>e
         puts e
       end

@@ -1,10 +1,7 @@
 require "linkedin-scraper/version"
 require "rubygems"
 require "mechanize"
-require "awesome_print"
+Dir["#{File.expand_path(File.dirname(__FILE__))}/linkedin-scraper/*.rb"].each {|file| require file }
 
-%w(client contact profile).each do |file|
-  require File.join(File.dirname(__FILE__), 'linkedin-scraper', file)
-end
 
 
