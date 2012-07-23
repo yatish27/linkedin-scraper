@@ -48,6 +48,7 @@ module Linkedin
       @past_companies=get_past_companies page
       @recommended_visitors=get_recommended_visitors page
       @linkedin_url=url
+      @page=page
     end
     #returns:nil if it gives a 404 request
     def self.get_profile url
@@ -55,8 +56,8 @@ module Linkedin
         @agent=Mechanize.new
         @agent.user_agent_alias = USER_AGENTS.sample
         @agent.max_history = 0
-        @page=@agent.get url
-        return Linkedin::Profile.new(@page, url)
+        page=@agent.get url
+        return Linkedin::Profile.new(page, url)
       rescue=>e
         puts e
       end
