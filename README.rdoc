@@ -49,7 +49,7 @@ Then you can see the scraped data like this:
     #     }
     # ]
   profile.current_companies
-  #Array of hash containing its current job companies and job profile
+    #Array of hash containing its current job companies and job profile
     #Example
     #  [
     #    [0] {
@@ -71,13 +71,13 @@ Then you can see the scraped data like this:
   profile.linkedin_url        #url of the profile
 
   profile.websites
-  #Array of websites 
-  #[
-  # [0] "http://www.yatishmehta.in"
-  #]
+    #Array of websites 
+    #[
+    # [0] "http://www.yatishmehta.in"
+    #]
 
   profile.groups
-    #array of hashes containing group name and link
+    #Array of hashes containing group name and link
     # [
     #     [ 0] {
     #         :name => "Business on Rails",
@@ -100,7 +100,7 @@ Then you can see the scraped data like this:
     # ]
 
   profile.education
-  #Array of hashes for eduction
+    #Array of hashes for eduction
     # [
     #     [0] {
     #                :name => "Vishwakarma Institute of Technology",
@@ -115,14 +115,14 @@ Then you can see the scraped data like this:
     # ]
     
   profile.recommended_visitors
-  #Its the list of visitors "Viewers of this profile also viewed..."
-  #attr_accessor :recommended_visitors = [
-  #    [0] {
-  #           :link =>  href="http://in.linkedin.com/in/nileshavhad?trk=pub-pbmap",
-  #           :name => "Nilesh Avhad",
-  #          :title => "Engineering Manager",
-  #        :company => "Better Labs"
-  #    },
+    #Its the list of visitors "Viewers of this profile also viewed..."
+    #attr_accessor :recommended_visitors = [
+    #    [0] {
+    #           :link =>  href="http://in.linkedin.com/in/nileshavhad?trk=pub-pbmap",
+    #           :name => "Nilesh Avhad",
+    #          :title => "Engineering Manager",
+    #        :company => "Better Labs"
+    #    },
   
 
 = ZOMG Fork! Thank you!
