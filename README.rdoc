@@ -90,6 +90,8 @@ Then you can see the scraped data like this:
     #     [ 2] {
     #         :name => "India on Rails",
     #         :link => "http://www.linkedin.com/groups/India-on-Rails-149940"
+    #     },
+    #     [ 3] {
     #         :name => "Open Source",
     #         :link => "http://www.linkedin.com/groups?gid=43875"
     #     },
