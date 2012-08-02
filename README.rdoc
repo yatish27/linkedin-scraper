@@ -32,34 +32,87 @@ Then you can see the scraped data like this:
   profile.industry            #the domain for which the contact belongs
     
   profile.past_companies
-  #Array of hash containing its past job companies and job profile
-  #Example
-  #  [
-  #    [0] {
-  #          :past_title => "Intern",
-  #        :past_company => "Sungard"
-  #        },
-  #    [1] {
-  #          :past_title => "Software Developer",
-  #        :past_company => "Microsoft"
-  #        }
-  #  ]
+    #Array of hash containing its past job companies and job profile
+    #Example
+    #  [
+    #     [0] {
+    #                 :past_company => "Consumyze Software",
+    #                   :past_title => "Trainee",
+    #         :past_company_website => "http://www.consumyze.com",
+    #                  :description => "Responsible for design and development"
+    #     },
+    #     [1] {
+    #                 :past_company => "SunGard Global Services",
+    #                   :past_title => "Project Intern",
+    #         :past_company_website => "http://www.sungard.com/globalservices/learnmore",
+    #                  :description => "Fame PassPoint. Developed an entirely Ajax based online control panel for user management and Data access for Fame"
+    #     }
+    # ]
   profile.current_companies
   #Array of hash containing its current job companies and job profile
-  #Example
-  #  [
-  #    [0] {
-  #          :current_title => "Intern",
-  #        :current_company => "Sungard"
-  #        },
-  #    [1] {
-  #          :current_title => "Software Developer",
-  #        :current_company => "Microsoft"
-  #        }
-  #  ]
+    #Example
+    #  [
+    #    [0] {
+    #          :current_title => "Intern",
+    #        :current_company => "Sungard"
+    #     :current_company_url=>"http://www.betterlabs.net",
+    #             :description=>"Responsible for design and development of projects on Ruby on Rails."
+    #        },
+    #    [1] {
+    #          :current_title  => "Software Developer",
+    #        :current_company  => "Microsoft"
+    #     :current_company_url =>"http://www.microsoft.net",
+    #             :description =>"Development and design"
+
+    #        }
+    #  ]
     
     
   profile.linkedin_url        #url of the profile
+
+  profile.websites
+  #Array of websites 
+  #[
+  # [0] "http://www.yatishmehta.in"
+  #]
+
+  profile.groups
+    #array of hashes containing group name and link
+    # [
+    #     [ 0] {
+    #         :name => "Business on Rails",
+    #         :link => "http://www.linkedin.com/groups/Business-on-Rails-27822"
+    #     },
+    #     [ 1] {
+    #         :name => "HTML5 Technologies",
+    #         :link => "http://www.linkedin.com/groups/HTML5-Technologies-2868882"
+    #     },
+    #     [ 2] {
+    #         :name => "India on Rails",
+    #         :link => "http://www.linkedin.com/groups/India-on-Rails-149940"
+    #         :name => "Open Source",
+    #         :link => "http://www.linkedin.com/groups?gid=43875"
+    #     },
+    #     [ 4] {
+    #         :name => "Rails Developers",
+    #         :link => "http://www.linkedin.com/groups?gid=77764"
+    #     },
+    # ]
+
+  profile.education
+  #Array of hashes for eduction
+    # [
+    #     [0] {
+    #                :name => "Vishwakarma Institute of Technology",
+    #         :description => "B.Tech, Computer Engineering",
+    #              :period => "2007 – 2011"
+    #     },
+    #     [1] {
+    #                :name => "St Ursula's High School",
+    #         :description => "Secondary School Education",
+    #              :period => nil
+    #     }
+    # ]
     
   profile.recommended_visitors
   #Its the list of visitors "Viewers of this profile also viewed..."
