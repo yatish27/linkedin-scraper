@@ -128,11 +128,13 @@ module Linkedin
         @agent.user_agent_alias = USER_AGENTS.sample
         @agent.max_history = 0
         page=@agent.get("http://www.linkedin.com"+link)
+        result[:linkedin_company_url] = "http://www.linkedin.com"+link
         result[:url] = page.at(".basic-info/div/dl/dd/a").text if page.at(".basic-info/div/dl/dd/a")
         node_2 = page.at(".basic-info").at(".content.inner-mod")
         node_2.search("dd").zip(node_2.search("dt")).each do |value,title|
           result[title.text.gsub(" ","_").downcase.to_sym] = value.text.strip
-        end
+        end        
+        result[:address] = page.at(".vcard.hq").at(".adr").text.gsub("\n"," ").strip if page.at(".vcard.hq")
        end
       result
     end
