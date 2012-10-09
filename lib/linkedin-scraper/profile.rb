@@ -3,7 +3,7 @@ module Linkedin
   class Profile    
     #the First name of the contact
     attr_accessor :first_name,:last_name,:title,:location,:country,
-    :industry, :linkedin_url,:recommended_visitors,:page
+                  :industry, :linkedin_url,:recommended_visitors,:page
     #Array of hashes for eduction
     # [
     #     [0] {
@@ -37,8 +37,10 @@ module Linkedin
     #     [ 2] {
     #         :name => "India on Rails",
     #         :link => "http://www.linkedin.com/groups/India-on-Rails-149940"
+    #      },
+    #     [ 3] {
     #         :name => "Open Source",
-    #         :link => "http://www.linkedin.com/groups?gid=43875"
+    #         :link => "http://www.linkedin.com/groups?gid=43875"    
     #     },
     #     [ 4] {
     #         :name => "Rails Developers",
@@ -119,14 +121,20 @@ module Linkedin
     end
 
     def get_company_url node
+      result={}
       if node.at("h4/strong/a")
         link=node.at("h4/strong/a")["href"]
         @agent=Mechanize.new
         @agent.user_agent_alias = USER_AGENTS.sample
         @agent.max_history = 0
         page=@agent.get("http://www.linkedin.com"+link)
-        url=page.at(".basic-info/div/dl/dd/a").text if page.at(".basic-info/div/dl/dd/a")
-      end
+        result[:url] = page.at(".basic-info/div/dl/dd/a").text if page.at(".basic-info/div/dl/dd/a")
+        node_2 = page.at(".basic-info").at(".content.inner-mod")
+        node_2.search("dd").zip(node_2.search("dt")).each do |value,title|
+          result[title.text.gsub(" ","_").downcase.to_sym] = value.text.strip
+        end
+       end
+      result
     end
 
     private
@@ -159,12 +167,14 @@ module Linkedin
       past_cs=[]
       if page.search(".position.experience.vevent.vcard.summary-past").first
         page.search(".position.experience.vevent.vcard.summary-past").each do |past_company|
-          url=get_company_url past_company
+          result = get_company_url past_company
+          url = result[:url]
           title=past_company.at("h3").text.gsub(/\s+|\n/, " ").strip if past_company.at("h3")
           company=past_company.at("h4").text.gsub(/\s+|\n/, " ").strip if past_company.at("h4")
           description=past_company.at(".description.past-position").text.gsub(/\s+|\n/, " ").strip if past_company.at(".description.past-position")
-          past_company={:past_company=>company,:past_title=> title,:past_company_website=>url,:description=>description}
-          past_cs<<past_company
+          p_company={:past_company=>company,:past_title=> title,:past_company_website=>url,:description=>description}
+          p_company = p_company.merge(result)          
+          past_cs<<p_company
         end
         return past_cs
       end
@@ -174,12 +184,13 @@ module Linkedin
       current_cs=[]
       if page.search(".position.experience.vevent.vcard.summary-current").first
         page.search(".position.experience.vevent.vcard.summary-current").each do |current_company|
-          url=get_company_url current_company
+          result = get_company_url current_company
+          url = result[:url]
           title=current_company.at("h3").text.gsub(/\s+|\n/, " ").strip if current_company.at("h3")
           company=current_company.at("h4").text.gsub(/\s+|\n/, " ").strip if current_company.at("h4")
           description=current_company.at(".description.current-position").text.gsub(/\s+|\n/, " ").strip if current_company.at(".description.current-position")
           current_company={:current_company=>company,:current_title=> title,:current_company_url=>url,:description=>description}
-          current_cs<<current_company
+          current_cs<<current_company.merge(result)
         end
         return current_cs
       end
