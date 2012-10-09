@@ -244,10 +244,10 @@ module Linkedin
       if page.search(".browsemap").first
         page.at(".browsemap").at("ul").search("li").each do |visitor|
           v={}
-          v[:link]=visitor.at('a').attributes["href"]
-          v[:name]=visitor.at('a').text
-          v[:title]=visitor.at('.headline').text.split(" at ").first
-          v[:company]=visitor.at('.headline').text.split(" at ").last
+          v[:link]=visitor.at('a')["href"]
+          v[:name]=visitor.at('strong/a').text
+          v[:title]=visitor.at('.headline').text.gsub("..."," ").split(" at ").first
+          v[:company]=visitor.at('.headline').text.gsub("..."," ").split(" at ")[1]
           recommended_vs<<v
         end
         return recommended_vs
