@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
 module Linkedin
-  class Profile    
+  class Profile
     #the First name of the contact
     attr_accessor :first_name,:last_name,:title,:location,:country,
-                  :industry, :linkedin_url,:recommended_visitors,:page
+     :industry, :linkedin_url,:recommended_visitors,:page
     #Array of hashes for eduction
     # [
     #     [0] {
@@ -19,7 +20,7 @@ module Linkedin
     # ]
     attr_accessor :education
 
-    #Array of websites 
+    #Array of websites
     #[
     #[0] "http://www.yatishmehta.in"
     #]
@@ -40,7 +41,7 @@ module Linkedin
     #      },
     #     [ 3] {
     #         :name => "Open Source",
-    #         :link => "http://www.linkedin.com/groups?gid=43875"    
+    #         :link => "http://www.linkedin.com/groups?gid=43875"
     #     },
     #     [ 4] {
     #         :name => "Rails Developers",
@@ -90,21 +91,21 @@ module Linkedin
     #url of the profile
 
 
-    def initialize(page,url)   
-      @first_name=get_first_name(page)
-      @last_name=get_last_name(page)
-      @title=get_title(page)
-      @location=get_location(page)
-      @country=get_country(page)
-      @industry=get_industry(page)
-      @current_companies=get_current_companies page
-      @past_companies=get_past_companies page
-      @recommended_visitors=get_recommended_visitors page
-      @education=get_education page
-      @linkedin_url=url
-      @websites=get_websites page
-      @groups=get_groups page
-      @page=page
+    def initialize(page,url)
+      @first_name           = get_first_name(page)
+      @last_name            = get_last_name(page)
+      @title                = get_title(page)
+      @location             = get_location(page)
+      @country              = get_country(page)
+      @industry             = get_industry(page)
+      @current_companies    = get_current_companies page
+      @past_companies       = get_past_companies page
+      @recommended_visitors = get_recommended_visitors page
+      @education            = get_education page
+      @linkedin_url         = url
+      @websites             = get_websites page
+      @groups               = get_groups page
+      @page                 = page
     end
     #returns:nil if it gives a 404 request
 
@@ -123,19 +124,19 @@ module Linkedin
     def get_company_url node
       result={}
       if node.at("h4/strong/a")
-        link=node.at("h4/strong/a")["href"]
-        @agent=Mechanize.new
+        link = node.at("h4/strong/a")["href"]
+        @agent = Mechanize.new
         @agent.user_agent_alias = USER_AGENTS.sample
         @agent.max_history = 0
-        page=@agent.get("http://www.linkedin.com"+link)
+        page = @agent.get("http://www.linkedin.com"+link)
         result[:linkedin_company_url] = "http://www.linkedin.com"+link
         result[:url] = page.at(".basic-info/div/dl/dd/a").text if page.at(".basic-info/div/dl/dd/a")
         node_2 = page.at(".basic-info").at(".content.inner-mod")
         node_2.search("dd").zip(node_2.search("dt")).each do |value,title|
           result[title.text.gsub(" ","_").downcase.to_sym] = value.text.strip
-        end        
+        end
         result[:address] = page.at(".vcard.hq").at(".adr").text.gsub("\n"," ").strip if page.at(".vcard.hq")
-       end
+      end
       result
     end
 
@@ -175,7 +176,7 @@ module Linkedin
           company=past_company.at("h4").text.gsub(/\s+|\n/, " ").strip if past_company.at("h4")
           description=past_company.at(".description.past-position").text.gsub(/\s+|\n/, " ").strip if past_company.at(".description.past-position")
           p_company={:past_company=>company,:past_title=> title,:past_company_website=>url,:description=>description}
-          p_company = p_company.merge(result)          
+          p_company = p_company.merge(result)
           past_cs<<p_company
         end
         return past_cs
@@ -205,7 +206,7 @@ module Linkedin
           name=item.at("h3").text.gsub(/\s+|\n/, " ").strip if item.at("h3")
           desc=item.at("h4").text.gsub(/\s+|\n/, " ").strip if item.at("h4")
           period=item.at(".period").text.gsub(/\s+|\n/, " ").strip if item.at(".period")
-          edu={:name=>name,:description=>desc,:period=>period} 
+          edu={:name=>name,:description=>desc,:period=>period}
           education<<edu
         end
         return education
@@ -216,13 +217,13 @@ module Linkedin
       websites=[]
       if page.search(".website").first
         page.search(".website").each do |site|
-          url=site.at("a")["href"]
-          url="http://www.linkedin.com"+url
-          url=CGI.parse(URI.parse(url).query)["url"]
-          websites<<url
+          url = site.at("a")["href"]
+          url = "http://www.linkedin.com"+url
+          url = CGI.parse(URI.parse(url).query)["url"]
+          websites << url
         end
         return websites.flatten!
-      end  
+      end
     end
 
     def get_groups page
@@ -231,7 +232,7 @@ module Linkedin
         page.search(".group-data").each do |item|
           name=item.text.gsub(/\s+|\n/, " ").strip
           link="http://www.linkedin.com"+item.at("a")["href"]
-          groups<<{:name=>name,:link=>link}
+          groups << {:name=>name,:link=>link}
         end
         return groups
       end
