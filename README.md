@@ -14,23 +14,25 @@ This gem is tested on Ruby versions 1.8.7, 1.9.2 and 1.9.3.
 
 Initialize a scraper instance for an URL, like this:
 
-  profile = Linkedin::Profile.get_profile('http://in.linkedin.com/pub/yatish-mehta/22/460/a86')
+  profile = Linkedin::Profile.get_profile("http://in.linkedin.com/pub/yatish-mehta/22/460/a86")
 
 Then you can see the scraped data like this:
 
- 
+
   profile.first_name          #the First name of the contact
-    
+
   profile.last_name           #the last name of the contact
-    
+
   profile.title               #the linkedin job title
-    
+
   profile.location            #the location of the contact
-    
+
   profile.country             #the country of the contact
-    
+
   profile.industry            #the domain for which the contact belongs
-    
+
+  profile.picture             #the profile pic url of contact
+
   profile.past_companies
     #Array of hash containing its past job companies and job profile
     #Example
@@ -66,12 +68,12 @@ Then you can see the scraped data like this:
 
     #        }
     #  ]
-    
-    
+
+
   profile.linkedin_url        #url of the profile
 
   profile.websites
-    #Array of websites 
+    #Array of websites
     #[
     # [0] "http://www.yatishmehta.in"
     #]
@@ -115,7 +117,7 @@ Then you can see the scraped data like this:
     #              :period => nil
     #     }
     # ]
-    
+
   profile.recommended_visitors
     #Its the list of visitors "Viewers of this profile also viewed..."
     #attr_accessor :recommended_visitors = [
@@ -125,12 +127,12 @@ Then you can see the scraped data like this:
     #          :title => "Engineering Manager",
     #        :company => "Better Labs"
     #    },
-  
+
 
 = ZOMG Fork! Thank you!
 
 You're welcome to fork this project and send pull requests. I want to thank specially:
 
 = To Do
-* 
+*
 Copyright (c) 2009-2012 Yatish Mehta, released under the MIT license
