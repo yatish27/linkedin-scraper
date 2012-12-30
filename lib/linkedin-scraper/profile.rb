@@ -4,7 +4,7 @@ module Linkedin
   class Profile
     #the First name of the contact
     attr_accessor :first_name,:last_name,:title,:location,:country,
-     :industry, :linkedin_url,:recommended_visitors,:page
+     :industry,:picture,:linkedin_url,:recommended_visitors,:page
     #Array of hashes for eduction
     # [
     #     [0] {
@@ -98,6 +98,7 @@ module Linkedin
       @location             = get_location(page)
       @country              = get_country(page)
       @industry             = get_industry(page)
+      @picture              = get_picture(page)
       @current_companies    = get_current_companies page
       @past_companies       = get_past_companies page
       @recommended_visitors = get_recommended_visitors page
@@ -164,6 +165,10 @@ module Linkedin
 
     def get_industry page
       return page.at(".industry").text.gsub(/\s+/, " ").strip if page.search(".industry").first
+    end
+
+    def get_picture page
+      return page.at(".photo").attributes['src'].value.strip if page.search(".photo").first
     end
 
     def get_past_companies page
