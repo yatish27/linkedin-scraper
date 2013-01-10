@@ -168,7 +168,7 @@ module Linkedin
     end
 
     def get_picture page
-      return page.at(".photo").attributes['src'].value.strip if page.search(".photo").first
+      return page.at("#profile-picture/img.photo").attributes['src'].value.strip if page.search("#profile-picture/img.photo").first
     end
 
     def get_past_companies page
