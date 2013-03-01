@@ -16,7 +16,7 @@ module Linkedin
 
     attr_accessor :current_companies
 
-
+    attr_accessor :skills
 
     def initialize(page,url)
       @first_name           = get_first_name(page)
@@ -26,30 +26,35 @@ module Linkedin
       @country              = get_country(page)
       @industry             = get_industry(page)
       @picture              = get_picture(page)
-      @current_companies    = get_current_companies page
-      @past_companies       = get_past_companies page
-      @recommended_visitors = get_recommended_visitors page
-      @education            = get_education page
+      @current_companies    = get_current_companies(page)
+      @past_companies       = get_past_companies(page)
+      @recommended_visitors = get_recommended_visitors(page)
+      @education            = get_education(page)
       @linkedin_url         = url
-      @websites             = get_websites page
-      @groups               = get_groups page
+      @websites             = get_websites(page)
+      @groups               = get_groups(page)
+      @skills               = get_skills(page)
       @page                 = page
     end
     #returns:nil if it gives a 404 request
 
-    def self.get_profile url
+    def self.get_profile(url)
       begin
-        @agent=Mechanize.new
+        @agent = Mechanize.new
         @agent.user_agent_alias = USER_AGENTS.sample
         @agent.max_history = 0
-        page=@agent.get url
+        page = @agent.get(url)
         return Linkedin::Profile.new(page, url)
       rescue=>e
         puts e
       end
     end
 
-    def get_company_url node
+    def get_skills(page)
+      page.search('.competency.show-bean').map{|skill|skill.text.strip if skill.text}
+    end
+
+    def get_company_url(node)
       result={}
       if node.at("h4/strong/a")
         link = node.at("h4/strong/a")["href"]
@@ -131,7 +136,7 @@ module Linkedin
       end
     end
 
-    def get_education page
+    def get_education(page)
       education=[]
       if page.search(".position.education.vevent.vcard").first
         page.search(".position.education.vevent.vcard").each do |item|
@@ -145,7 +150,7 @@ module Linkedin
       end
     end
 
-    def get_websites page
+    def get_websites(page)
       websites=[]
       if page.search(".website").first
         page.search(".website").each do |site|
@@ -158,7 +163,7 @@ module Linkedin
       end
     end
 
-    def get_groups page
+    def get_groups(page)
       groups = []
       if page.search(".group-data").first
         page.search(".group-data").each do |item|
@@ -170,7 +175,7 @@ module Linkedin
       end
     end
 
-    def get_recommended_visitors  page
+    def get_recommended_visitors(page)
       recommended_vs=[]
       if page.search(".browsemap").first
         page.at(".browsemap").at("ul").search("li").each do |visitor|

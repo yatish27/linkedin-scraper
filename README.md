@@ -11,7 +11,7 @@ Install the gem from RubyGems:
 
     gem install linkedin-scraper
 
-This gem is tested on Ruby versions 1.8.7, 1.9.2 and 1.9.3.
+This gem is tested on Ruby versions 1.8.7, 1.9.2 1.9.3 and 2.0.0
 
 Usage
 -----
@@ -184,6 +184,9 @@ Then you can see the scraped data like this:
 
     profile.education
     #Array of hashes for eduction
+
+    profile.skills
+    #Array of skills
 
     profile.picture
     #url of the profile picture
