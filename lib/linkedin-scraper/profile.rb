@@ -24,6 +24,7 @@ module Linkedin
       @title                = get_title(page)
       @location             = get_location(page)
       @country              = get_country(page)
+      @summary              = get_summary(page)
       @industry             = get_industry(page)
       @picture              = get_picture(page)
       @current_companies    = get_current_companies(page)
@@ -92,6 +93,10 @@ module Linkedin
     end
 
     def get_country page
+      return page.at(".locality").text.split(",").last.strip if page.search(".locality").first
+    end
+
+    def get_summary page
       return page.at(".locality").text.split(",").last.strip if page.search(".locality").first
     end
 
