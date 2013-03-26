@@ -54,7 +54,7 @@ module Linkedin
     end
 
     def get_skills(page)
-      page.search('.competency.show-bean').map{|skill|skill.text.strip if skill.text}
+      page.search('.skills-section.skill-pill').map{|skill|skill.text.strip if skill.text}
     end
 
     def get_company_url(node)
