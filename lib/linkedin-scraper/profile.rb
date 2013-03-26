@@ -38,7 +38,12 @@ module Linkedin
       @page                 = page
     end
     #returns:nil if it gives a 404 request
-
+    
+    def testing
+      puts "blah"
+    end
+      
+    
     def self.get_profile(url)
       begin
         @agent = Mechanize.new
