@@ -10,7 +10,7 @@ module Linkedin
 
     attr_accessor :websites
 
-    attr_accessor:groups
+    attr_accessor :groups
 
     attr_accessor :past_companies
 
@@ -97,7 +97,7 @@ module Linkedin
     end
 
     def get_summary page
-      return page.at(".locality").text.split(",").last.strip if page.search(".locality").first
+      return page.at(".summary").text.split(",").last.strip if page.search(".locality").first
     end
 
     def get_industry page
