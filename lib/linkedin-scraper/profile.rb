@@ -40,7 +40,7 @@ module Linkedin
     #returns:nil if it gives a 404 request
     
     def testing
-      puts "blah"
+      "blah"
     end
       
     
