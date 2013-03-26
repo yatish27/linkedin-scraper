@@ -99,7 +99,7 @@ module Linkedin
     end
 
     def get_summary page
-      return page.at(".summary").text.split(",").last.strip if page.search(".locality").first
+      return page.at(".summary").text.gsub(/\s+|\n/, " ").strip if page.at(".summary")
     end
 
     def get_industry page
