@@ -99,7 +99,7 @@ module Linkedin
     end
 
     def get_summary page
-      return page.at(".summary").text.gsub(/\s+|\n/, " ").strip if page.at(".summary")
+      return page.at(".summary.description").text.gsub(/\s+|\n/, " ").strip if page.at(".summary.description")
     end
 
     def get_industry page
