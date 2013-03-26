@@ -4,7 +4,7 @@ module Linkedin
 
     USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
 
-    attr_accessor :first_name,:last_name,:title,:location,:country, :industry,:picture,:linkedin_url,:recommended_visitors,:page
+    attr_accessor :first_name, :last_name, :title, :location, :country, :summary, :industry, :picture, :linkedin_url, :recommended_visitors, :page
 
     attr_accessor :education
 
