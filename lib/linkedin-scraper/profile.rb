@@ -39,10 +39,7 @@ module Linkedin
     end
     #returns:nil if it gives a 404 request
     
-    def testing
-      "blah"
-    end
-      
+    
     
     def self.get_profile(url)
       begin
