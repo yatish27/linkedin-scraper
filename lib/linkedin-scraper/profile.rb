@@ -129,17 +129,7 @@ module Linkedin
 
     def get_current_companies(page)
       current_cs = []
-      if page.search(".position.experience.vevent.vcard.summary-current").first
-        page.search(".position.experience.vevent.vcard.summary-current").each do |current_company|
-          result = get_company_url current_company
-          url = result[:url]
-          title = current_company.at("h3").text.gsub(/\s+|\n/, " ").strip if current_company.at("h3")
-          company = current_company.at("h4").text.gsub(/\s+|\n/, " ").strip if current_company.at("h4")
-          description = current_company.at(".description.current-position").text.gsub(/\s+|\n/, " ").strip if current_company.at(".description.current-position")
-          current_company = {:current_company=>company,:current_title=> title,:current_company_url=>url,:description=>description}
-          current_cs << current_company.merge(result)
-        end
-      elsif page.search("experience-[id^=rowID_]").first
+      if page.search("experience-[id^=rowID_]").first
         page.search("experience-[id^=rowID_]").each do |current_company|
           result = get_company_url current_company
           url = result[:url]
