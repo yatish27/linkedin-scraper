@@ -78,39 +78,39 @@ module Linkedin
 
     private
 
-    def get_first_name page
+    def get_first_name(page)
       return page.at(".given-name").text.strip if page.search(".given-name").first
     end
 
-    def get_last_name page
+    def get_last_name(page)
       return page.at(".family-name").text.strip if page.search(".family-name").first
     end
 
-    def get_title page
+    def get_title(page)
       return page.at(".headline-title").text.gsub(/\s+/, " ").strip if page.search(".headline-title").first
     end
 
-    def get_location page
+    def get_location(page)
       return page.at(".locality").text.split(",").first.strip if page.search(".locality").first
     end
 
-    def get_country page
+    def get_country(page)
       return page.at(".locality").text.split(",").last.strip if page.search(".locality").first
     end
 
-    def get_summary page
+    def get_summary(page)
       return page.at(".summary.description").text.gsub(/\s+|\n/, " ").strip if page.at(".summary.description")
     end
 
-    def get_industry page
+    def get_industry(page)
       return page.at(".industry").text.gsub(/\s+/, " ").strip if page.search(".industry").first
     end
 
-    def get_picture page
+    def get_picture(page)
       return page.at("#profile-picture/img.photo").attributes['src'].value.strip if page.search("#profile-picture/img.photo").first
     end
 
-    def get_past_companies page
+    def get_past_companies(page)
       past_cs=[]
       if page.search(".position.experience.vevent.vcard.summary-past").first
         page.search(".position.experience.vevent.vcard.summary-past").each do |past_company|
@@ -127,7 +127,7 @@ module Linkedin
       end
     end
 
-    def get_current_companies page
+    def get_current_companies(page)
       current_cs = []
       if page.search(".position.experience.vevent.vcard.summary-current").first
         page.search(".position.experience.vevent.vcard.summary-current").each do |current_company|
@@ -139,7 +139,7 @@ module Linkedin
           current_company = {:current_company=>company,:current_title=> title,:current_company_url=>url,:description=>description}
           current_cs << current_company.merge(result)
         end
-      else page.search(".background-experience").first
+      if page.search(".background-experience").first
         page.search(".background-experience").each do |current_company|
           result = get_company_url current_company
           url = result[:url]
