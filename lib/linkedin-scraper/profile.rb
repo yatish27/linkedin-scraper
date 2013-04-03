@@ -138,6 +138,7 @@ module Linkedin
           description = current_company.at(".description.current-position").text.gsub(/\s+|\n/, " ").strip if current_company.at(".description.current-position")
           current_company = {:current_company=>company,:current_title=> title,:current_company_url=>url,:description=>description}
           current_cs << current_company.merge(result)
+        end
       else page.search(".background-experience").first
         page.search(".background-experience").each do |current_company|
           result = get_company_url current_company
