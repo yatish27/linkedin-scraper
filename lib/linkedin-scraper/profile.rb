@@ -174,7 +174,7 @@ module Linkedin
       skills=[]
       if page.search("#profile-skills").first
         page.search("#profile-skills").each do |site|
-          name = site.at("a")["href"](".jellybean")
+          name = site.at("a")["href"]
           skills << name
         end
         return skills
