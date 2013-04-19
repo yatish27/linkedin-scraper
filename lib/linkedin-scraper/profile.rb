@@ -173,7 +173,7 @@ module Linkedin
     def get_skills(page)
       skills=[]
       if page.search("#profile-skills").first
-        page.search(."#profile-skills").each do |site|
+        page.search("#profile-skills").each do |site|
           name = site.at("a")["href"](".jellybean")
           skills << name
         end
