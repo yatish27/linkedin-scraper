@@ -4,13 +4,13 @@ module Linkedin
 
     USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
 
-    attr_accessor :first_name,:last_name,:title,:location,:country, :industry,:picture,:linkedin_url,:recommended_visitors,:page
+    attr_accessor :first_name, :last_name, :title, :location, :country, :summary, :industry, :picture, :linkedin_url, :recommended_visitors, :page
 
     attr_accessor :education
 
     attr_accessor :websites
 
-    attr_accessor:groups
+    attr_accessor :groups
 
     attr_accessor :past_companies
 
@@ -24,6 +24,7 @@ module Linkedin
       @title                = get_title(page)
       @location             = get_location(page)
       @country              = get_country(page)
+      @summary              = get_summary(page)
       @industry             = get_industry(page)
       @picture              = get_picture(page)
       @current_companies    = get_current_companies(page)
@@ -37,7 +38,9 @@ module Linkedin
       @page                 = page
     end
     #returns:nil if it gives a 404 request
-
+    
+    
+    
     def self.get_profile(url)
       begin
         @agent = Mechanize.new
@@ -51,7 +54,7 @@ module Linkedin
     end
 
     def get_skills(page)
-      page.search('.competency.show-bean').map{|skill|skill.text.strip if skill.text}
+      return page.at(".skills").text.gsub(/\s+|\n/, " ").strip if page.at(".skills")
     end
 
     def get_company_url(node)
@@ -75,35 +78,39 @@ module Linkedin
 
     private
 
-    def get_first_name page
+    def get_first_name(page)
       return page.at(".given-name").text.strip if page.search(".given-name").first
     end
 
-    def get_last_name page
+    def get_last_name(page)
       return page.at(".family-name").text.strip if page.search(".family-name").first
     end
 
-    def get_title page
+    def get_title(page)
       return page.at(".headline-title").text.gsub(/\s+/, " ").strip if page.search(".headline-title").first
     end
 
-    def get_location page
+    def get_location(page)
       return page.at(".locality").text.split(",").first.strip if page.search(".locality").first
     end
 
-    def get_country page
+    def get_country(page)
       return page.at(".locality").text.split(",").last.strip if page.search(".locality").first
     end
 
-    def get_industry page
+    def get_summary(page)
+      return page.at(".summary.description").text.gsub(/\s+|\n/, " ").strip if page.at(".summary.description")
+    end
+
+    def get_industry(page)
       return page.at(".industry").text.gsub(/\s+/, " ").strip if page.search(".industry").first
     end
 
-    def get_picture page
+    def get_picture(page)
       return page.at("#profile-picture/img.photo").attributes['src'].value.strip if page.search("#profile-picture/img.photo").first
     end
 
-    def get_past_companies page
+    def get_past_companies(page)
       past_cs=[]
       if page.search(".position.experience.vevent.vcard.summary-past").first
         page.search(".position.experience.vevent.vcard.summary-past").each do |past_company|
@@ -120,9 +127,9 @@ module Linkedin
       end
     end
 
-    def get_current_companies page
+    def get_current_companies(page)
       current_cs = []
-      if page.search(".position.experience.vevent.vcard.summary-current").first
+      if page.search(".position.first.experience.vevent.vcard.summary-current").first
         page.search(".position.experience.vevent.vcard.summary-current").each do |current_company|
           result = get_company_url current_company
           url = result[:url]
@@ -162,6 +169,17 @@ module Linkedin
         return websites.flatten!
       end
     end
+
+    # def get_skills(page)
+    #   skills=[]
+    #   if page.search("#profile-skills").first
+    #     page.search("#profile-skills").each do |site|
+    #       name = site.at("a")["href"]
+    #       skills << name
+    #     end
+    #     return skills
+    #   end
+    # end
 
     def get_groups(page)
       groups = []
