@@ -53,9 +53,9 @@ module Linkedin
       end
     end
 
-    # def get_skills(page)
-    #   page.search('.skills-section.skill-pill').map{|skill|skill.text.strip if skill.text}
-    # end
+    def get_skills(page)
+      return page.at(".skills").text.gsub(/\s+|\n/, " ").strip if page.at(".skills")
+    end
 
     def get_company_url(node)
       result={}
@@ -170,16 +170,16 @@ module Linkedin
       end
     end
 
-    def get_skills(page)
-      skills=[]
-      if page.search("#profile-skills").first
-        page.search("#profile-skills").each do |site|
-          name = site.at("a")["href"]
-          skills << name
-        end
-        return skills
-      end
-    end
+    # def get_skills(page)
+    #   skills=[]
+    #   if page.search("#profile-skills").first
+    #     page.search("#profile-skills").each do |site|
+    #       name = site.at("a")["href"]
+    #       skills << name
+    #     end
+    #     return skills
+    #   end
+    # end
 
     def get_groups(page)
       groups = []
