@@ -53,9 +53,9 @@ module Linkedin
       end
     end
 
-    def get_skills(page)
-      page.search('.skills-section.skill-pill').map{|skill|skill.text.strip if skill.text}
-    end
+    # def get_skills(page)
+    #   page.search('.skills-section.skill-pill').map{|skill|skill.text.strip if skill.text}
+    # end
 
     def get_company_url(node)
       result={}
@@ -129,15 +129,15 @@ module Linkedin
 
     def get_current_companies(page)
       current_cs = []
-      if page.search("experience-[id^=rowID_]").first
-        page.search("experience-[id^=rowID_]").each do |current_company|
+      if page.search(".position.first.experience.vevent.vcard.summary-current").first
+        page.search(".position.experience.vevent.vcard.summary-current").each do |current_company|
           result = get_company_url current_company
           url = result[:url]
-          title = current_company.at("h4").text.gsub(/\s+|\n/, " ").strip if current_company.at("h4")
-          company = current_company.at("h5").text.gsub(/\s+|\n/, " ").strip if current_company.at("h5")
-          description = current_company.at(".description").text.gsub(/\s+|\n/, " ").strip if current_company.at(".description.current-position")
+          title = current_company.at("h3").text.gsub(/\s+|\n/, " ").strip if current_company.at("h3")
+          company = current_company.at("h4").text.gsub(/\s+|\n/, " ").strip if current_company.at("h4")
+          description = current_company.at(".description.current-position").text.gsub(/\s+|\n/, " ").strip if current_company.at(".description.current-position")
           current_company = {:current_company=>company,:current_title=> title,:current_company_url=>url,:description=>description}
-          current_cs << current_company.merge(result)          
+          current_cs << current_company.merge(result)
         end
         return current_cs
       end
@@ -167,6 +167,17 @@ module Linkedin
           websites << url
         end
         return websites.flatten!
+      end
+    end
+
+    def get_skills(page)
+      skills=[]
+      if page.search("#profile-skills").first
+        page.search(."#profile-skills").each do |site|
+          name = site.at("a")["href"](".jellybean")
+          skills << name
+        end
+        return skills
       end
     end
 
