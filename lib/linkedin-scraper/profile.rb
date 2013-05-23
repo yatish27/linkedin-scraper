@@ -4,10 +4,7 @@ module Linkedin
 
     USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
 
-
     attr_accessor :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :page, :past_companies, :picture, :recommended_visitors, :skills, :title, :websites, :organizations, :summary, :certifications, :organizations
-
-
 
 
     def initialize(page,url)
@@ -236,7 +233,10 @@ module Linkedin
       end
     end
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> cleanup and sort attr_accessor args
     def get_recommended_visitors(page)
       recommended_vs=[]
       if page.search(".browsemap").first
