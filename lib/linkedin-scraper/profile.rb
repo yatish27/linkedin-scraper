@@ -8,6 +8,7 @@ module Linkedin
 
 
 
+
     def initialize(page,url)
       @first_name           = get_first_name(page)
       @last_name            = get_last_name(page)
