@@ -25,7 +25,14 @@ module Linkedin
       @page                 = page
     end
     #returns:nil if it gives a 404 request
-
+    
+    def name
+      name = ''
+      name += "#{self.first_name} " if self.first_name
+      name += self.last_name if self.last_name
+      name
+    end
+    
     def self.get_profile(url)
       begin
         @agent = Mechanize.new
