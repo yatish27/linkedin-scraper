@@ -35,6 +35,7 @@ module Linkedin
       @groups               = get_groups(page)
       @skills               = get_skills(page)
       @page                 = page
+      @summary              = get_summary(page)
     end
     #returns:nil if it gives a 404 request
     
@@ -109,7 +110,11 @@ module Linkedin
     def get_picture page
       return page.at("#profile-picture/img.photo").attributes['src'].value.strip if page.search("#profile-picture/img.photo").first
     end
-
+    
+    def get_summary page
+      return page.at(".summary.description").text.gsub(/\s+|\n/, " ").strip if page.at(".summary.description")
+    end
+    
     def get_past_companies page
       past_cs=[]
       if page.search(".position.experience.vevent.vcard.summary-past").first
