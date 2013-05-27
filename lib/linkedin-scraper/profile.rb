@@ -4,19 +4,7 @@ module Linkedin
 
     USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
 
-    attr_accessor :first_name,:last_name,:title,:location,:country, :industry,:picture,:linkedin_url,:recommended_visitors,:page
-
-    attr_accessor :education
-
-    attr_accessor :websites
-
-    attr_accessor:groups
-
-    attr_accessor :past_companies
-
-    attr_accessor :current_companies
-
-    attr_accessor :skills
+    attr_accessor :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :page, :past_companies, :picture, :recommended_visitors, :skills, :summary, :title, :websites
 
     def initialize(page,url)
       @first_name           = get_first_name(page)
@@ -26,6 +14,7 @@ module Linkedin
       @country              = get_country(page)
       @industry             = get_industry(page)
       @picture              = get_picture(page)
+      @summary              = get_summary(page)
       @current_companies    = get_current_companies(page)
       @past_companies       = get_past_companies(page)
       @recommended_visitors = get_recommended_visitors(page)
@@ -37,7 +26,14 @@ module Linkedin
       @page                 = page
     end
     #returns:nil if it gives a 404 request
-
+    
+    def name
+      name = ''
+      name += "#{self.first_name} " if self.first_name
+      name += self.last_name if self.last_name
+      name
+    end
+    
     def self.get_profile(url)
       begin
         @agent = Mechanize.new
@@ -101,6 +97,10 @@ module Linkedin
 
     def get_picture page
       return page.at("#profile-picture/img.photo").attributes['src'].value.strip if page.search("#profile-picture/img.photo").first
+    end
+
+    def get_summary(page)
+      return page.at(".summary.description").text.gsub(/\s+|\n/, " ").strip if page.at(".summary.description")
     end
 
     def get_past_companies page
