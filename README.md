@@ -27,6 +27,8 @@ Then you can see the scraped data like this:
 
     profile.last_name           #the last name of the contact
 
+    profile.name                #The Full name of the profile
+
     profile.title               #the linkedin job title
 
     profile.location            #the location of the contact
@@ -36,6 +38,15 @@ Then you can see the scraped data like this:
     profile.industry            #the domain for which the contact belongs
 
     profile.picture             #the profile pic url of contact
+
+    profile.skills              #the skills of the profile
+
+    profile.organizations       #the organizations of the profile
+
+    profile.education           #Array of hashes for eduction
+
+    profile.picture             #url of the profile picture
+
 
     profile.current_companies
 
@@ -251,6 +262,10 @@ Then you can see the scraped data like this:
     }
     ]
 
+## Credits
 
+- [Justin Grevich](https://github.com/jgrevich)
+- [Vpoola](https://github.com/vpoola88)
+- [Mark Walker](https://github.com/jfdimark)
 
 You're welcome to fork this project and send pull requests. I want to thank specially:

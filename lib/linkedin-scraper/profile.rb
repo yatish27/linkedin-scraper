@@ -26,18 +26,18 @@ module Linkedin
       @certifications       = get_certifications(page)
       @organizations        = get_organizations(page)
       @skills               = get_skills(page)
-      @page                 = page
- 
+      @languages            = get_languages(page)
+      @page                 = page 
     end
     #returns:nil if it gives a 404 request
-    
+
     def name
       name = ''
       name += "#{self.first_name} " if self.first_name
       name += self.last_name if self.last_name
       name
     end
-    
+
     def self.get_profile(url)
       begin
         @agent = Mechanize.new
@@ -50,10 +50,35 @@ module Linkedin
       end
     end
 
-    def get_skills(page)
-      page.search('.competency.show-bean').map{|skill|skill.text.strip if skill.text}
-    end
+    private
 
+    def get_certifications(page)
+      certifications = []
+      # search string to use with Nokogiri
+      query = 'ul.certifications li.certification'
+      months = 'January|February|March|April|May|June|July|August|September|November|December'
+      regex = /(#{months}) (\d{4})/
+      
+      # if the profile contains cert data
+      if page.search(query).first
+        
+        # loop over each element with cert data
+        page.search(query).each do |item|
+          item_text = item.text.gsub(/\s+|\n/, " ").strip
+          name = item_text.split(" #{item_text.scan(/#{months} \d{4}/)[0]}")[0]
+          authority = nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
+          license = nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
+          start_date = Date.parse(item_text.scan(regex)[0].join(' '))
+          
+          includes_end_date = item_text.scan(regex).count > 1
+          end_date = includes_end_date ? Date.parse(item_text.scan(regex)[0].join(' ')) : nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
+
+          certifications << { name:name, authority:authority, license:license, start_date:start_date, end_date:end_date }
+        end
+        return certifications
+      end
+    end
+        
     def get_company_url(node)
       result={}
       if node.at("h4/strong/a")
@@ -73,58 +98,11 @@ module Linkedin
       result
     end
 
-    private
-
-    def get_first_name page
-      return page.at(".given-name").text.strip if page.search(".given-name").first
-    end
-
-    def get_last_name page
-      return page.at(".family-name").text.strip if page.search(".family-name").first
-    end
-
-    def get_title page
-      return page.at(".headline-title").text.gsub(/\s+/, " ").strip if page.search(".headline-title").first
-    end
-
-    def get_location page
-      return page.at(".locality").text.split(",").first.strip if page.search(".locality").first
-    end
-
-    def get_country page
+    def get_country(page)
       return page.at(".locality").text.split(",").last.strip if page.search(".locality").first
     end
 
-    def get_industry page
-      return page.at(".industry").text.gsub(/\s+/, " ").strip if page.search(".industry").first
-    end
-
-    def get_picture page
-      return page.at("#profile-picture/img.photo").attributes['src'].value.strip if page.search("#profile-picture/img.photo").first
-    end
-
-    def get_summary(page)
-      return page.at(".summary.description").text.gsub(/\s+|\n/, " ").strip if page.at(".summary.description")
-    end
-
-    def get_past_companies page
-      past_cs=[]
-      if page.search(".position.experience.vevent.vcard.summary-past").first
-        page.search(".position.experience.vevent.vcard.summary-past").each do |past_company|
-          result = get_company_url past_company
-          url = result[:url]
-          title = past_company.at("h3").text.gsub(/\s+|\n/, " ").strip if past_company.at("h3")
-          company = past_company.at("h4").text.gsub(/\s+|\n/, " ").strip if past_company.at("h4")
-          description = past_company.at(".description.past-position").text.gsub(/\s+|\n/, " ").strip if past_company.at(".description.past-position")
-          p_company = {:past_company=>company,:past_title=> title,:past_company_website=>url,:description=>description}
-          p_company = p_company.merge(result)
-          past_cs << p_company
-        end
-        return past_cs
-      end
-    end
-
-    def get_current_companies page
+    def get_current_companies(page)
       current_cs = []
       if page.search(".position.experience.vevent.vcard.summary-current").first
         page.search(".position.experience.vevent.vcard.summary-current").each do |current_company|
@@ -154,17 +132,8 @@ module Linkedin
       end
     end
 
-    def get_websites(page)
-      websites=[]
-      if page.search(".website").first
-        page.search(".website").each do |site|
-          url = site.at("a")["href"]
-          url = "http://www.linkedin.com"+url
-          url = CGI.parse(URI.parse(url).query)["url"]
-          websites << url
-        end
-        return websites.flatten!
-      end
+    def get_first_name(page)
+      return page.at(".given-name").text.strip if page.search(".given-name").first
     end
 
     def get_groups(page)
@@ -179,6 +148,10 @@ module Linkedin
       end
     end
     
+    def get_industry(page)
+      return page.at(".industry").text.gsub(/\s+/, " ").strip if page.search(".industry").first
+    end
+
     def get_languages(page)
       languages = []
       # if the profile contains org data
@@ -196,33 +169,14 @@ module Linkedin
       end # page.search('ul.organizations li.organization').first
     end
 
-    def get_certifications(page)
-      certifications = []
-      # search string to use with Nokogiri
-      query = 'ul.certifications li.certification'
-      months = 'January|February|March|April|May|June|July|August|September|November|December'
-      regex = /(#{months}) (\d{4})/
-      
-      # if the profile contains cert data
-      if page.search(query).first
-        
-        # loop over each element with cert data
-        page.search(query).each do |item|
-          item_text = item.text.gsub(/\s+|\n/, " ").strip
-          name = item_text.split(" #{item_text.scan(/#{months} \d{4}/)[0]}")[0]
-          authority = nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
-          license = nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
-          start_date = Date.parse(item_text.scan(regex)[0].join(' '))
-          
-          includes_end_date = item_text.scan(regex).count > 1
-          end_date = includes_end_date ? Date.parse(item_text.scan(regex)[0].join(' ')) : nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
-
-          certifications << { name:name, authority:authority, license:license, start_date:start_date, end_date:end_date }
-        end
-        return certifications
-      end
+    def get_last_name(page)
+      return page.at(".family-name").text.strip if page.search(".family-name").first
     end
-    
+
+    def get_location(page)
+      return page.at(".locality").text.split(",").first.strip if page.search(".locality").first
+    end
+
     def get_organizations(page)
       organizations = []
       # if the profile contains org data
@@ -248,6 +202,27 @@ module Linkedin
       end # page.search('ul.organizations li.organization').first
     end
 
+    def get_past_companies(page)
+      past_cs=[]
+      if page.search(".position.experience.vevent.vcard.summary-past").first
+        page.search(".position.experience.vevent.vcard.summary-past").each do |past_company|
+          result = get_company_url past_company
+          url = result[:url]
+          title = past_company.at("h3").text.gsub(/\s+|\n/, " ").strip if past_company.at("h3")
+          company = past_company.at("h4").text.gsub(/\s+|\n/, " ").strip if past_company.at("h4")
+          description = past_company.at(".description.past-position").text.gsub(/\s+|\n/, " ").strip if past_company.at(".description.past-position")
+          p_company = {:past_company=>company,:past_title=> title,:past_company_website=>url,:description=>description}
+          p_company = p_company.merge(result)
+          past_cs << p_company
+        end
+        return past_cs
+      end
+    end
+
+    def get_picture(page)
+      return page.at("#profile-picture/img.photo").attributes['src'].value.strip if page.search("#profile-picture/img.photo").first
+    end
+
     def get_recommended_visitors(page)
       recommended_vs=[]
       if page.search(".browsemap").first
@@ -262,5 +237,31 @@ module Linkedin
         return recommended_vs
       end
     end
+  
+    def get_skills(page)
+      page.search('.competency.show-bean').map{|skill|skill.text.strip if skill.text}
+    end
+
+    def get_summary(page)
+      return page.at(".summary.description").text.gsub(/\s+|\n/, " ").strip if page.at(".summary.description")
+    end
+
+    def get_title(page)
+      return page.at(".headline-title").text.gsub(/\s+/, " ").strip if page.search(".headline-title").first
+    end
+    
+    def get_websites(page)
+      websites=[]
+      if page.search(".website").first
+        page.search(".website").each do |site|
+          url = site.at("a")["href"]
+          url = "http://www.linkedin.com"+url
+          url = CGI.parse(URI.parse(url).query)["url"]
+          websites << url
+        end
+        return websites.flatten!
+      end
+    end
+
   end
 end

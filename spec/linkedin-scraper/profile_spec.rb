@@ -2,15 +2,16 @@ require 'spec_helper'
 require 'linkedin-scraper'
 
 describe Linkedin::Profile do
+
   before(:all) do
     page = Nokogiri::HTML(File.open("spec/fixtures/jgrevich.html", 'r') { |f| f.read })
     @profile = Linkedin::Profile.new(page, "http://www.linkedin.com/in/jgrevich")
   end
-  
+
   describe "::get_profile" do
     it "Create an instance of profile class" do
       expect(@profile).to be_instance_of Linkedin::Profile
-    end    
+    end
   end
 
   describe ".first_name" do
