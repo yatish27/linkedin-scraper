@@ -4,7 +4,7 @@ module Linkedin
 
     USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
 
-    attr_accessor :certifications, :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :organizations, :page, :past_companies, :picture, :recommended_visitors, :skills, :summary, :title, :websites
+    attr_accessor :certifications, :country, :current_companies, :education, :first_name, :groups, :industry, :languages, :last_name, :linkedin_url, :location, :organizations, :page, :past_companies, :picture, :recommended_visitors, :skills, :summary, :title, :websites
 
     def initialize(page,url)
       @first_name           = get_first_name(page)
@@ -19,6 +19,7 @@ module Linkedin
       @past_companies       = get_past_companies(page)
       @recommended_visitors = get_recommended_visitors(page)
       @education            = get_education(page)
+      @languages            = get_languages(page)
       @linkedin_url         = url
       @websites             = get_websites(page)
       @groups               = get_groups(page)
@@ -26,6 +27,7 @@ module Linkedin
       @organizations        = get_organizations(page)
       @skills               = get_skills(page)
       @page                 = page
+ 
     end
     #returns:nil if it gives a 404 request
     
@@ -175,6 +177,23 @@ module Linkedin
         end
         return groups
       end
+    end
+    
+    def get_languages(page)
+      languages = []
+      # if the profile contains org data
+      if page.search('ul.languages li.language').first
+        
+        # loop over each element with org data
+        page.search('ul.languages li.language').each do |item|
+          # find the h3 element within the above section and get the text with excess white space stripped
+          language = item.at('h3').text
+          proficiency = item.at('span.proficiency').text.gsub(/\s+|\n/, " ").strip
+          languages << { language:language, proficiency:proficiency }
+        end
+        
+        return languages
+      end # page.search('ul.organizations li.organization').first
     end
 
     def get_certifications(page)
