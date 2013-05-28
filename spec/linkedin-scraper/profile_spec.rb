@@ -14,14 +14,20 @@ describe Linkedin::Profile do
     end
   end
 
+  describe ".country" do
+    it 'returns the country' do
+      expect(@profile.country).to eq "United States"
+    end
+  end
+
   describe ".first_name" do
-    it 'returns the first name of the profile' do
+    it 'returns the first name' do
       expect(@profile.first_name).to eq "Justin"
     end
   end
 
   describe ".last_name" do
-    it 'returns the last name of the profile' do
+    it 'returns the last name' do
       expect(@profile.last_name).to eq "Grevich"
     end
   end
@@ -52,7 +58,7 @@ describe Linkedin::Profile do
   end # describe ".languages" do
   
   describe ".name" do
-    it 'returns the first and last name of the profile' do
+    it 'returns the first and last name' do
       expect(@profile.name).to eq "Justin Grevich"
     end
   end
@@ -73,14 +79,14 @@ describe Linkedin::Profile do
   end
 
   describe ".organizations" do
-    it 'returns an array of organization hashes for the profile' do
+    it 'returns an array of organization hashes' do
       expect(@profile.organizations.class).to eq Array
       expect(@profile.organizations.first[:name]).to eq 'San Diego Ruby'
     end
   end
   
   describe ".summary" do
-    it 'returns the summary of the profile' do
+    it 'returns the summary' do
       expect(@profile.summary.include?("I am a web developer and systems administrator")).to eq true
     end
   end

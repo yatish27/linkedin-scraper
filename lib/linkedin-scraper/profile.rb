@@ -99,7 +99,7 @@ module Linkedin
     end
 
     def get_country(page)
-      return page.at(".locality").text.split(",").last.strip if page.search(".locality").first
+      return Geocoder.search(page.at(".locality").text.split(",").last.strip).first.country if page.search(".locality").first && Geocoder.search(page.at(".locality").text.split(",").last.strip).first
     end
 
     def get_current_companies(page)
