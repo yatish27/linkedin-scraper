@@ -4,7 +4,9 @@ module Linkedin
 
     USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
 
-    attr_accessor :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :page, :past_companies, :picture, :recommended_visitors, :skills, :title, :websites, :organizations, :summary
+
+    attr_accessor :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :page, :past_companies, :picture, :recommended_visitors, :skills, :title, :websites, :organizations, :summary, :certifications, :organizations
+
 
 
 
@@ -25,6 +27,7 @@ module Linkedin
       @websites             = get_websites(page)
       @groups               = get_groups(page)
       @organizations        = get_organizations(page)
+      @certifications       = get_certifications(page)
       @skills               = get_skills(page)
       @page                 = page
     end
@@ -179,6 +182,7 @@ module Linkedin
       end
     end
 
+
     def get_organizations(page)
       organizations = []
       # if the profile contains org data
@@ -202,6 +206,34 @@ module Linkedin
 
         return organizations
       end # page.search('ul.organizations li.organization').first
+    end
+
+
+    def get_certifications(page)
+      certifications = []
+      # search string to use with Nokogiri
+      query = 'ul.certifications li.certification'
+      months = 'January|February|March|April|May|June|July|August|September|November|December'
+      regex = /(#{months}) (\d{4})/
+
+      # if the profile contains cert data
+      if page.search(query).first
+
+        # loop over each element with cert data
+        page.search(query).each do |item|
+          item_text = item.text.gsub(/\s+|\n/, " ").strip
+          name = item_text.split(" #{item_text.scan(/#{months} \d{4}/)[0]}")[0]
+          authority = nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
+          license = nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
+          start_date = Date.parse(item_text.scan(regex)[0].join(' '))
+
+          includes_end_date = item_text.scan(regex).count > 1
+          end_date = includes_end_date ? Date.parse(item_text.scan(regex)[0].join(' ')) : nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
+
+          certifications << { name:name, authority:authority, license:license, start_date:start_date, end_date:end_date }
+        end
+        return certifications
+      end
     end
 
 
