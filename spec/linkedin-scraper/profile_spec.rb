@@ -30,12 +30,6 @@ describe Linkedin::Profile do
       expect(@profile.name).to eq "Justin Grevich"
     end
   end
-
-  describe ".summary" do
-    it 'returns the summary of the profile' do
-      expect(@profile.summary.include?("I am a web developer and systems administrator")).to eq true
-    end
-  end
   
   describe ".certifications" do
     it 'returns an array of certification hashes' do
@@ -51,5 +45,18 @@ describe Linkedin::Profile do
       expect(@profile.certifications.first[:start_date]).to eq Date.parse('December 2010')
     end
   end
+
+  describe ".organizations" do
+    it 'returns an array of organization hashes for the profile' do
+      expect(@profile.organizations.class).to eq Array
+      expect(@profile.organizations.first[:name]).to eq 'San Diego Ruby'
+    end
+  end
   
+  describe ".summary" do
+    it 'returns the summary of the profile' do
+      expect(@profile.summary.include?("I am a web developer and systems administrator")).to eq true
+    end
+  end
+
 end
