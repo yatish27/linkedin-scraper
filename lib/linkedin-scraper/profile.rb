@@ -5,7 +5,7 @@ module Linkedin
     USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
 
 
-    attr_accessor :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :page, :past_companies, :picture, :recommended_visitors, :skills, :title, :websites, :organizations, :summary, :certifications
+    attr_accessor :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :page, :past_companies, :picture, :recommended_visitors, :skills, :title, :websites, :organizations, :summary, :certifications, :languages
 
 
     def initialize(page,url)
@@ -28,6 +28,7 @@ module Linkedin
       @certifications       = get_certifications(page)
       @organizations        = get_organizations(page)
       @skills               = get_skills(page)
+      @languages            = get_languages(page)
       @page                 = page
     end
     #returns:nil if it gives a 404 request
@@ -208,6 +209,22 @@ module Linkedin
       end # page.search('ul.organizations li.organization').first
     end
 
+    def get_languages(page)
+      languages = []
+      # if the profile contains org data
+      if page.search('ul.languages li.language').first
+
+        # loop over each element with org data
+        page.search('ul.languages li.language').each do |item|
+          # find the h3 element within the above section and get the text with excess white space stripped
+          language = item.at('h3').text
+          proficiency = item.at('span.proficiency').text.gsub(/\s+|\n/, " ").strip
+          languages << { language:language, proficiency:proficiency }
+        end
+
+        return languages
+      end # page.search('ul.organizations li.organization').first
+    end
 
     def get_certifications(page)
       certifications = []
