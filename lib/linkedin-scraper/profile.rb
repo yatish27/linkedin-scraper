@@ -8,9 +8,6 @@ module Linkedin
     attr_accessor :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :page, :past_companies, :picture, :recommended_visitors, :skills, :title, :websites, :organizations, :summary, :certifications
 
 
-
-
-
     def initialize(page,url)
       @first_name           = get_first_name(page)
       @last_name            = get_last_name(page)
