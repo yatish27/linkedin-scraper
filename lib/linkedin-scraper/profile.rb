@@ -7,6 +7,7 @@ module Linkedin
     attr_accessor :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :page, :past_companies, :picture, :recommended_visitors, :skills, :title, :websites, :organizations, :summary, :certifications, :organizations
 
 
+
     def initialize(page,url)
       @first_name           = get_first_name(page)
       @last_name            = get_last_name(page)
@@ -25,6 +26,7 @@ module Linkedin
       @groups               = get_groups(page)
       @organizations        = get_organizations(page)
       @certifications       = get_certifications(page)
+      @organizations        = get_organizations(page)
       @skills               = get_skills(page)
       @page                 = page
     end
@@ -180,6 +182,7 @@ module Linkedin
     end
 
 
+
     def get_organizations(page)
       organizations = []
       # if the profile contains org data
@@ -233,10 +236,34 @@ module Linkedin
       end
     end
 
-<<<<<<< HEAD
 
-=======
->>>>>>> cleanup and sort attr_accessor args
+    def get_organizations(page)
+      organizations = []
+      # if the profile contains org data
+      if page.search('ul.organizations li.organization').first
+
+        # loop over each element with org data
+        page.search('ul.organizations li.organization').each do |item|
+          # find the h3 element within the above section and get the text with excess white space stripped
+          name = item.search('h3').text.gsub(/\s+|\n/, " ").strip
+          position = nil # add this later
+          occupation = nil # add this latetr too, this relates to the experience/work
+          start_date = Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').first)
+          if item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last == 'Present'
+            end_date = nil
+          else
+            Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last)
+          end
+
+          organizations << { name: name, start_date: start_date, end_date: end_date }
+        end
+
+        return organizations
+      end # page.search('ul.organizations li.organization').first
+    end
+
+
+
     def get_recommended_visitors(page)
       recommended_vs=[]
       if page.search(".browsemap").first

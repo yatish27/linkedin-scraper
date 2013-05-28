@@ -16,12 +16,13 @@ describe Linkedin::Profile do
   end
 
   describe ".first_name" do
-    it 'returns the first name of the profile' do
+    it 'returns the first and last name of the profile' do
       expect(@profile.first_name).to eq "Justin"
     end
   end
 
   describe ".last_name" do
+
     it 'returns the last name of the profile' do
       expect(@profile.last_name).to eq "Grevich"
     end
@@ -32,6 +33,7 @@ describe Linkedin::Profile do
       expect(@profile.name).to eq "Justin Grevich"
     end
   end
+
 
 
   describe ".organizations" do
@@ -56,4 +58,14 @@ describe Linkedin::Profile do
     end
   end
 
+<<<<<<< HEAD
+=======
+  describe ".organizations" do
+    it 'returns an array of organization hashes for the profile' do
+      expect(@profile.organizations.class).to eq Array
+      expect(@profile.organizations.first[:name]).to eq 'San Diego Ruby'
+    end
+  end
+
+>>>>>>> add organizations to scraper.
 end
