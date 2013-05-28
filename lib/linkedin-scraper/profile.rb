@@ -4,19 +4,7 @@ module Linkedin
 
     USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
 
-    attr_accessor :first_name,:last_name,:title,:location,:country, :industry,:picture,:linkedin_url,:recommended_visitors,:page
-
-    attr_accessor :education
-
-    attr_accessor :websites
-
-    attr_accessor:groups
-
-    attr_accessor :past_companies
-
-    attr_accessor :current_companies
-
-    attr_accessor :skills
+    attr_accessor :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :page, :past_companies, :picture, :recommended_visitors, :skills, :title, :websites
 
     def initialize(page,url)
       @first_name           = get_first_name(page)
