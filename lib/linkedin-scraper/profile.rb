@@ -4,7 +4,7 @@ module Linkedin
 
     USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
 
-    attr_accessor :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :page, :past_companies, :picture, :recommended_visitors, :skills, :title, :websites
+    attr_accessor :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :page, :past_companies, :picture, :recommended_visitors, :skills, :title, :websites, :organizations, :summary
 
 
 
@@ -16,6 +16,7 @@ module Linkedin
       @country              = get_country(page)
       @industry             = get_industry(page)
       @picture              = get_picture(page)
+      @summary              = get_summary(page)
       @current_companies    = get_current_companies(page)
       @past_companies       = get_past_companies(page)
       @recommended_visitors = get_recommended_visitors(page)
@@ -96,6 +97,11 @@ module Linkedin
     def get_industry page
       return page.at(".industry").text.gsub(/\s+/, " ").strip if page.search(".industry").first
     end
+
+    def get_summary(page)
+      page.at(".description.summary").text.gsub(/\s+/, " ").strip if page.search(".description.summary").first
+    end
+
 
     def get_picture page
       return page.at("#profile-picture/img.photo").attributes['src'].value.strip if page.search("#profile-picture/img.photo").first

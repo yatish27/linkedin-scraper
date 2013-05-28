@@ -262,6 +262,10 @@ Then you can see the scraped data like this:
     }
     ]
 
+## Credits
 
+- [Justin Grevich](https://github.com/jgrevich)
+- [Vpoola](https://github.com/vpoola88)
+- [Mark Walker](https://github.com/jfdimark)
 
 You're welcome to fork this project and send pull requests. I want to thank specially:
