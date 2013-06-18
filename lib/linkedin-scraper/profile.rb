@@ -47,13 +47,13 @@ module Linkedin
         @agent.max_history = 0
         page = @agent.get(url)
         return Linkedin::Profile.new(page, url)
-      rescue=>e
+      rescue => e
         puts e
       end
     end
 
     def get_skills(page)
-      page.search('.competency.show-bean').map{|skill|skill.text.strip if skill.text}
+      page.search('.competency.show-bean').map{|skill|skill.text.strip if skill.text} rescue nil
     end
 
     def get_company_url(node)
@@ -188,25 +188,28 @@ module Linkedin
       organizations = []
       # if the profile contains org data
       if page.search('ul.organizations li.organization').first
-
         # loop over each element with org data
         page.search('ul.organizations li.organization').each do |item|
-          # find the h3 element within the above section and get the text with excess white space stripped
-          name = item.search('h3').text.gsub(/\s+|\n/, " ").strip
-          position = nil # add this later
-          occupation = nil # add this latetr too, this relates to the experience/work
-          start_date = Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').first)
-          if item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last == 'Present'
-            end_date = nil
-          else
-            Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last)
+
+          begin
+            # find the h3 element within the above section and get the text with excess white space stripped
+            name = item.search('h3').text.gsub(/\s+|\n/, " ").strip
+            position = nil # add this later
+            occupation = nil # add this latetr too, this relates to the experience/work
+            start_date = Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').first)
+            if item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last == 'Present'
+              end_date = nil
+            else
+              Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last)
+            end
+
+            organizations << { name: name, start_date: start_date, end_date: end_date }
+          rescue => e
+
           end
-
-          organizations << { name: name, start_date: start_date, end_date: end_date }
         end
-
         return organizations
-      end # page.search('ul.organizations li.organization').first
+      end
     end
 
     def get_languages(page)
@@ -216,10 +219,13 @@ module Linkedin
 
         # loop over each element with org data
         page.search('ul.languages li.language').each do |item|
-          # find the h3 element within the above section and get the text with excess white space stripped
-          language = item.at('h3').text
-          proficiency = item.at('span.proficiency').text.gsub(/\s+|\n/, " ").strip
-          languages << { language:language, proficiency:proficiency }
+          begin
+            # find the h3 element within the above section and get the text with excess white space stripped
+            language = item.at('h3').text
+            proficiency = item.at('span.proficiency').text.gsub(/\s+|\n/, " ").strip
+            languages << { language:language, proficiency:proficiency }
+          rescue => e
+          end
         end
 
         return languages
@@ -228,6 +234,7 @@ module Linkedin
 
     def get_certifications(page)
       certifications = []
+
       # search string to use with Nokogiri
       query = 'ul.certifications li.certification'
       months = 'January|February|March|April|May|June|July|August|September|November|December'
@@ -238,19 +245,23 @@ module Linkedin
 
         # loop over each element with cert data
         page.search(query).each do |item|
-          item_text = item.text.gsub(/\s+|\n/, " ").strip
-          name = item_text.split(" #{item_text.scan(/#{months} \d{4}/)[0]}")[0]
-          authority = nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
-          license = nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
-          start_date = Date.parse(item_text.scan(regex)[0].join(' '))
+          begin
+            item_text = item.text.gsub(/\s+|\n/, " ").strip
+            name = item_text.split(" #{item_text.scan(/#{months} \d{4}/)[0]}")[0]
+            authority = nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
+            license = nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
+            start_date = Date.parse(item_text.scan(regex)[0].join(' '))
 
-          includes_end_date = item_text.scan(regex).count > 1
-          end_date = includes_end_date ? Date.parse(item_text.scan(regex)[0].join(' ')) : nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
+            includes_end_date = item_text.scan(regex).count > 1
+            end_date = includes_end_date ? Date.parse(item_text.scan(regex)[0].join(' ')) : nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
 
-          certifications << { name:name, authority:authority, license:license, start_date:start_date, end_date:end_date }
+            certifications << { name:name, authority:authority, license:license, start_date:start_date, end_date:end_date }
+          rescue => e
+          end
         end
         return certifications
       end
+
     end
 
 
@@ -261,23 +272,26 @@ module Linkedin
 
         # loop over each element with org data
         page.search('ul.organizations li.organization').each do |item|
-          # find the h3 element within the above section and get the text with excess white space stripped
-          name = item.search('h3').text.gsub(/\s+|\n/, " ").strip
-          position = nil # add this later
-          occupation = nil # add this latetr too, this relates to the experience/work
-          start_date = Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').first)
-          if item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last == 'Present'
-            end_date = nil
-          else
-            Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last)
+          begin
+            # find the h3 element within the above section and get the text with excess white space stripped
+            name = item.search('h3').text.gsub(/\s+|\n/, " ").strip
+            position = nil # add this later
+            occupation = nil # add this latetr too, this relates to the experience/work
+            start_date = Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').first)
+            if item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last == 'Present'
+              end_date = nil
+            else
+              Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last)
+            end
+
+            organizations << { name: name, start_date: start_date, end_date: end_date }
+          rescue => e
           end
-
-          organizations << { name: name, start_date: start_date, end_date: end_date }
         end
-
-        return organizations
-      end # page.search('ul.organizations li.organization').first
+      end
+      return organizations
     end
+
 
 
 
@@ -295,5 +309,6 @@ module Linkedin
         return recommended_vs
       end
     end
+
   end
 end
