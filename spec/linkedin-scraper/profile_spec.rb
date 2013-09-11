@@ -15,6 +15,12 @@ describe Linkedin::Profile do
     end
   end
 
+  describe ".country" do
+    it 'returns the country' do
+      expect(@profile.country).to eq "United States"
+    end
+  end
+
   describe ".first_name" do
     it 'returns the first and last name of the profile' do
       expect(@profile.first_name).to eq "Justin"
