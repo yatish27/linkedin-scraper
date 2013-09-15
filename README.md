@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/ngsmrk/linkedin-scraper.png)](http://travis-ci.org/yatishmehta27/linkedin-scraper)
+[![Build Status](https://secure.travis-ci.org/yatishmehta27/linkedin-scraper.png)](http://travis-ci.org/yatishmehta27/linkedin-scraper)
 
 Linkedin Scraper
 ================
@@ -13,7 +13,7 @@ Install the gem from RubyGems:
 
     gem install linkedin-scraper
 
-This gem is tested on Ruby versions 1.8.7, 1.9.2 1.9.3 and 2.0.0
+This gem is tested on Ruby versions 1.9.2, 1.9.3, 2.0.0, jruby1.9, rbx1.9, ree
 
 Usage
 -----
