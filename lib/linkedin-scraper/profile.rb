@@ -33,12 +33,6 @@ module Linkedin
     end
     #returns:nil if it gives a 404 request
 
-    def name
-      name = ''
-      name += "#{self.first_name} " if self.first_name
-      name += self.last_name if self.last_name
-      name
-    end
 
     def self.get_profile(url)
       begin
@@ -52,29 +46,15 @@ module Linkedin
       end
     end
 
-    def get_skills(page)
-      page.search('.competency.show-bean').map{|skill|skill.text.strip if skill.text} rescue nil
+    def name
+      name = ''
+      name += "#{self.first_name} " if self.first_name
+      name += self.last_name        if self.last_name
+      name
     end
 
-    def get_company_url(node)
-      result={}
-      if node.at("h4/strong/a")
-        link = node.at("h4/strong/a")["href"]
-        @agent = Mechanize.new
-        @agent.user_agent_alias = USER_AGENTS.sample
-        @agent.max_history = 0
-        page = @agent.get("http://www.linkedin.com"+link)
-        result[:linkedin_company_url] = "http://www.linkedin.com"+link
-        result[:url] = page.at(".basic-info/div/dl/dd/a").text if page.at(".basic-info/div/dl/dd/a")
-        node_2 = page.at(".basic-info").at(".content.inner-mod")
-        node_2.search("dd").zip(node_2.search("dt")).each do |value,title|
-          result[title.text.gsub(" ","_").downcase.to_sym] = value.text.strip
-        end
-        result[:address] = page.at(".vcard.hq").at(".adr").text.gsub("\n"," ").strip if page.at(".vcard.hq")
-      end
-      result
-    end
-
+    
+   
     private
 
     def get_first_name page
@@ -108,6 +88,29 @@ module Linkedin
 
     def get_picture page
       return page.at("#profile-picture/img.photo").attributes['src'].value.strip if page.search("#profile-picture/img.photo").first
+    end
+
+    def get_skills(page)
+      page.search('.competency.show-bean').map{|skill|skill.text.strip if skill.text} rescue nil
+    end
+
+    def get_company_url(node)
+      result={}
+      if node.at("h4/strong/a")
+        link = node.at("h4/strong/a")["href"]
+        @agent = Mechanize.new
+        @agent.user_agent_alias = USER_AGENTS.sample
+        @agent.max_history = 0
+        page = @agent.get("http://www.linkedin.com"+link)
+        result[:linkedin_company_url] = "http://www.linkedin.com"+link
+        result[:url] = page.at(".basic-info/div/dl/dd/a").text if page.at(".basic-info/div/dl/dd/a")
+        node_2 = page.at(".basic-info").at(".content.inner-mod")
+        node_2.search("dd").zip(node_2.search("dt")).each do |value,title|
+          result[title.text.gsub(" ","_").downcase.to_sym] = value.text.strip
+        end
+        result[:address] = page.at(".vcard.hq").at(".adr").text.gsub("\n"," ").strip if page.at(".vcard.hq")
+      end
+      result
     end
 
     def get_past_companies page
@@ -182,20 +185,14 @@ module Linkedin
       end
     end
 
-
-
     def get_organizations(page)
       organizations = []
-      # if the profile contains org data
+      
       if page.search('ul.organizations li.organization').first
-        # loop over each element with org data
         page.search('ul.organizations li.organization').each do |item|
 
           begin
-            # find the h3 element within the above section and get the text with excess white space stripped
-            name = item.search('h3').text.gsub(/\s+|\n/, " ").strip
-            position = nil # add this later
-            occupation = nil # add this latetr too, this relates to the experience/work
+            name = item.search('h3').text.gsub(/\s+|\n/, " ").strip    
             start_date = Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').first)
             if item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last == 'Present'
               end_date = nil
@@ -204,8 +201,7 @@ module Linkedin
             end
 
             organizations << { name: name, start_date: start_date, end_date: end_date }
-          rescue => e
-
+          rescue   
           end
         end
         return organizations
@@ -214,86 +210,45 @@ module Linkedin
 
     def get_languages(page)
       languages = []
-      # if the profile contains org data
       if page.search('ul.languages li.language').first
-
-        # loop over each element with org data
         page.search('ul.languages li.language').each do |item|
           begin
-            # find the h3 element within the above section and get the text with excess white space stripped
             language = item.at('h3').text
             proficiency = item.at('span.proficiency').text.gsub(/\s+|\n/, " ").strip
-            languages << { language:language, proficiency:proficiency }
-          rescue => e
+            languages << { language: language, proficiency: proficiency }
+          rescue
           end
         end
-
         return languages
-      end # page.search('ul.organizations li.organization').first
+      end
     end
 
     def get_certifications(page)
       certifications = []
-
-      # search string to use with Nokogiri
       query = 'ul.certifications li.certification'
       months = 'January|February|March|April|May|June|July|August|September|November|December'
       regex = /(#{months}) (\d{4})/
 
-      # if the profile contains cert data
+      
       if page.search(query).first
-
-        # loop over each element with cert data
         page.search(query).each do |item|
           begin
             item_text = item.text.gsub(/\s+|\n/, " ").strip
             name = item_text.split(" #{item_text.scan(/#{months} \d{4}/)[0]}")[0]
-            authority = nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
-            license = nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
+            authority = nil
+            license   = nil 
             start_date = Date.parse(item_text.scan(regex)[0].join(' '))
-
             includes_end_date = item_text.scan(regex).count > 1
-            end_date = includes_end_date ? Date.parse(item_text.scan(regex)[0].join(' ')) : nil # we need a profile with an example of this and probably will need to use the API to accuratetly get this data
-
-            certifications << { name:name, authority:authority, license:license, start_date:start_date, end_date:end_date }
-          rescue => e
+            end_date = includes_end_date ? Date.parse(item_text.scan(regex)[0].join(' ')) : nil 
+            certifications << { name: name, authority: authority, license: license, start_date: start_date, end_date: end_date }
+          rescue
           end
         end
         return certifications
       end
 
     end
-
-
-    def get_organizations(page)
-      organizations = []
-      # if the profile contains org data
-      if page.search('ul.organizations li.organization').first
-
-        # loop over each element with org data
-        page.search('ul.organizations li.organization').each do |item|
-          begin
-            # find the h3 element within the above section and get the text with excess white space stripped
-            name = item.search('h3').text.gsub(/\s+|\n/, " ").strip
-            position = nil # add this later
-            occupation = nil # add this latetr too, this relates to the experience/work
-            start_date = Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').first)
-            if item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last == 'Present'
-              end_date = nil
-            else
-              Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last)
-            end
-
-            organizations << { name: name, start_date: start_date, end_date: end_date }
-          rescue => e
-          end
-        end
-      end
-      return organizations
-    end
-
-
-
+    
 
     def get_recommended_visitors(page)
       recommended_vs=[]
