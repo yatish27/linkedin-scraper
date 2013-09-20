@@ -10,7 +10,7 @@ describe Linkedin::Profile do
   end
 
   describe ".get_profile" do
-    it "Create an instance of profile class" do
+    it "Create an instance of Linkedin::Profile class" do
       expect(@profile).to be_instance_of Linkedin::Profile
     end
   end
@@ -75,7 +75,9 @@ describe Linkedin::Profile do
           expect(@profile.languages.first[:proficiency]).to eq '(Native or bilingual proficiency)'
         end
       end
+      
     end # context 'with language data' do
+    
   end # describe ".languages" do
 
 
