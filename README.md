@@ -4,7 +4,8 @@ Linkedin Scraper
 ================
 
 Linkedin-scraper is a gem for scraping linkedin public profiles.
-You give it an URL, and it lets you easily get its title, name, country, area, current_companies and much more.
+Given the URL of the profile, it gets the name, country, title, area, current companies, past comapnies,organizations, skills, groups, etc
+
 
 Installation
 ------------
@@ -13,42 +14,47 @@ Install the gem from RubyGems:
 
     gem install linkedin-scraper
 
-This gem is tested on Ruby versions 1.9.2, 1.9.3, 2.0.0, jruby1.9, rbx1.9, ree
+This gem is tested on 1.9.2, 1.9.3, 2.0.0, jruby1.9, rbx1.9,
 
 Usage
 -----
 
-Initialize a scraper instance for an URL, like this:
+Initialize a scraper instance
 
     profile = Linkedin::Profile.get_profile("http://www.linkedin.com/in/jeffweiner08")
 
-Then you can see the scraped data like this:
+The returning object responds to the following methods
 
 
-    profile.first_name          #the First name of the contact
+    profile.first_name          # The First name of the contact
 
-    profile.last_name           #the last name of the contact
+    profile.last_name           # The last name of the contact
 
-    profile.name                #The Full name of the profile
+    profile.name                # The full name of the profile
 
-    profile.title               #the linkedin job title
+    profile.title               # The job title
 
-    profile.location            #the location of the contact
+    profile.location            # The location of the contact
 
-    profile.country             #the country of the contact
+    profile.country             # The country of the contact
 
-    profile.industry            #the domain for which the contact belongs
+    profile.industry            # The domain for which the contact belongs
 
-    profile.picture             #the profile pic url of contact
+    profile.picture             # The profile picture link of profile
 
-    profile.skills              #the skills of the profile
+    profile.skills              # Array of skills of the profile
 
-    profile.organizations       #the organizations of the profile
+    profile.organizations       # Array organizations of the profile
 
-    profile.education           #Array of hashes for eduction
+    profile.education           # Array of hashes for education
 
-    profile.picture             #url of the profile picture
+    profile.websites            # Array of websites
 
+	profile.groups              # Array of groups
+
+	profile.certifications      # Array of certifications
+
+For current and past comapnies it also provides the details of the companies like comapny size, industry, address, etc 
 
     profile.current_companies
 
@@ -118,8 +124,6 @@ Then you can see the scraped data like this:
 
 
     profile.past_companies
-    #Array of hash containing its past job companies and job profile
-    #Example
     [
     [0] {
                 :past_company => "Accel Partners",
@@ -183,30 +187,8 @@ Then you can see the scraped data like this:
     ]
 
 
-    profile.linkedin_url        #url of the profile
-
-    profile.websites
-    #Array of websites
-    [
-      [0]   "http://www.linkedin.com/"
-    ]
-
-    profile.groups
-    #Array of hashes containing group name and link
-
-
-    profile.education
-    #Array of hashes for eduction
-
-    profile.skills
-    #Array of skills
-
-    profile.picture
-    #url of the profile picture
-
-
     profile.recommended_visitors
-    #Its the list of visitors "Viewers of this profile also viewed..."
+    #It is the list of visitors "Viewers of this profile also viewed..."
     [
     [0] {
            :link => "http://www.linkedin.com/in/barackobama?trk=pub-pbmap",
@@ -264,10 +246,5 @@ Then you can see the scraped data like this:
     }
     ]
 
-## Credits
 
-- [Justin Grevich](https://github.com/jgrevich)
-- [Vpoola](https://github.com/vpoola88)
-- [Mark Walker](https://github.com/jfdimark)
-
-You're welcome to fork this project and send pull requests. I want to thank specially:
+You're welcome to fork this project and send pull requests
