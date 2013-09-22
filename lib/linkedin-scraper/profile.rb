@@ -2,266 +2,225 @@
 module Linkedin
   class Profile
 
-    USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
+    USER_AGENTS = ['Windows IE 6', 'Windows IE 7', 'Windows Mozilla', 'Mac Safari', 'Mac FireFox', 'Mac Mozilla', 'Linux Mozilla', 'Linux Firefox', 'Linux Konqueror']
 
-
-    attr_accessor :country, :current_companies, :education, :first_name, :groups, :industry, :last_name, :linkedin_url, :location, :page, :past_companies, :picture, :recommended_visitors, :skills, :title, :websites, :organizations, :summary, :certifications, :languages
-
-
-    def initialize(page,url)
-      @first_name           = get_first_name(page)
-      @last_name            = get_last_name(page)
-      @title                = get_title(page)
-      @location             = get_location(page)
-      @country              = get_country(page)
-      @industry             = get_industry(page)
-      @picture              = get_picture(page)
-      @summary              = get_summary(page)
-      @current_companies    = get_current_companies(page)
-      @past_companies       = get_past_companies(page)
-      @recommended_visitors = get_recommended_visitors(page)
-      @education            = get_education(page)
-      @linkedin_url         = url
-      @websites             = get_websites(page)
-      @groups               = get_groups(page)
-      @organizations        = get_organizations(page)
-      @certifications       = get_certifications(page)
-      @organizations        = get_organizations(page)
-      @skills               = get_skills(page)
-      @languages            = get_languages(page)
-      @page                 = page
-    end
-    #returns:nil if it gives a 404 request
-
-
+    ATTRIBUTES = %w(name first_name last_name title location country industry summary skills picture certifications organizations linkedin_url past_companies current_companies recommended_visitors education groups websites languages)
+    
+    attr_reader :page, :linkedin_url
+    
     def self.get_profile(url)
       begin
-        agent = Mechanize.new
-        agent.user_agent_alias = USER_AGENTS.sample
-        agent.max_history = 0
-        page = agent.get(url)
-        return Linkedin::Profile.new(page, url)
+        Linkedin::Profile.new(url)
       rescue => e
         puts e
       end
     end
 
+    def initialize(url)
+      @linkedin_url = url
+      @page         = http_client.get(url)
+    end
+    
     def name
-      name = ''
-      name += "#{self.first_name} " if self.first_name
-      name += self.last_name        if self.last_name
-      name
+      "#{first_name} #{last_name}"
+    end
+   
+    def first_name 
+      @first_name ||= (@page.at('.given-name').text.strip if @page.at('.given-name'))
+    end
+
+    def last_name
+      @last_name ||= (@page.at('.family-name').text.strip if @page.at('.family-name'))
+    end
+
+    def title 
+      @title ||= (@page.at('.headline-title').text.gsub(/\s+/, ' ').strip if @page.at('.headline-title'))
+    end
+
+    def location
+      @location ||= (@page.at('.locality').text.split(',').first.strip if @page.at('.locality'))
+    end
+
+    def country
+      @country ||= (@page.at('.locality').text.split(',').last.strip if @page.at('.locality'))
+    end
+
+    def industry
+      @industry ||= (@page.at('.industry').text.gsub(/\s+/, ' ').strip if @page.at('.industry'))
+    end
+
+    def summary
+      @summary ||= (@page.at('.description.summary').text.gsub(/\s+/, ' ').strip if @page.at('.description.summary'))
+    end
+
+    def picture
+      @picture ||= (@page.at('#profile-picture/img.photo').attributes['src'].value.strip if @page.at('#profile-picture/img.photo'))
+    end
+
+    def skills
+      @skills ||= (@page.search('.competency.show-bean').map{|skill| skill.text.strip if skill.text} rescue nil)
+    end
+
+    def past_companies
+      @past_companies ||= get_companies('past')
+    end
+
+    def current_companies
+      @current_companies ||= get_companies('current')
+    end
+
+    def education
+      unless @education
+        @education = []
+        if @page.search('.position.education.vevent.vcard').first
+          @education = @page.search('.position.education.vevent.vcard').map do |item|
+            name   = item.at('h3').text.gsub(/\s+|\n/, ' ').strip      if item.at('h3')
+            desc   = item.at('h4').text.gsub(/\s+|\n/, ' ').strip      if item.at('h4')
+            period = item.at('.period').text.gsub(/\s+|\n/, ' ').strip if item.at('.period')
+            
+            {:name => name, :description => desc, :period => period}
+          end
+        end
+      end
+       @education
+    end
+
+    def websites
+      unless @websites
+        @websites = []
+        if @page.search('.website').first
+          @websites = @page.search('.website').map do |site|
+            url = site.at('a')['href']
+            url = "http://www.linkedin.com#{url}"
+            CGI.parse(URI.parse(url).query)['url']
+          end.flatten!
+        end
+      end
+      @websites
+    end
+
+    def groups
+      unless @groups
+        @groups = []
+        if page.search('.group-data').first
+          @groups = page.search('.group-data').each do |item|
+            name = item.text.gsub(/\s+|\n/, ' ').strip
+            link = "http://www.linkedin.com#{item.at('a')['href']}"
+            {:name => name, :link => link}
+          end
+        end
+      end
+      @groups
+    end
+
+    def organizations
+      unless @organizations
+        @organizations = []
+        if @page.search('ul.organizations/li.organization').first
+          @organizations = @page.search('ul.organizations/li.organization').map do |item|
+            
+            name       = item.search('h3').text.gsub(/\s+|\n/, ' ').strip rescue nil
+            start_date, end_date = item.search('ul.specifics li').text.gsub(/\s+|\n/, ' ').strip.split(' to ')
+            start_date = Date.parse(start_date) rescue nil
+            end_date   = Date.parse(end_date)   rescue nil
+            {:name => name, :start_date => start_date, :end_date => end_date}
+          end
+        end
+      end
+      @organizations
+    end
+
+    def languages
+      unless @languages
+        @languages = []
+        if @page.at('ul.languages/li.language')
+          @languages = @page.search('ul.languages/li.language').map do |item|
+            language    = item.at('h3').text rescue nil
+            proficiency = item.at('span.proficiency').text.gsub(/\s+|\n/, ' ').strip rescue nil
+            {:language=> language, :proficiency => proficiency }
+          end
+        end
+      end
+      @languages
+    end
+
+    def certifications
+      unless @certtifications
+        @certifications = []
+        if @page.at('ul.certifications/li.certification')
+          @certifications = @page.search('ul.certifications/li.certification').map do |item|
+            name       = item.at('h3').text.gsub(/\s+|\n/, ' ').strip                         rescue nil
+            authority  = item.at('.specifics/.org').text.gsub(/\s+|\n/, ' ').strip            rescue nil
+            license    = item.at('.specifics/.licence-number').text.gsub(/\s+|\n/, ' ').strip rescue nil
+            start_date = item.at('.specifics/.dtstart').text.gsub(/\s+|\n/, ' ').strip        rescue nil
+            
+            {:name => name, :authority => authority, :license => license, :start_date => start_date}
+          end
+        end
+      end
+      @certifications
+    end
+    
+
+    def recommended_visitors
+      unless @recommended_visitors
+        @recommended_visitors = []
+        if @page.at('.browsemap/.content/ul/li')
+          @recommended_visitors = @page.search('.browsemap/.content/ul/li').map do |visitor|
+            v = {}  
+            v[:link]    = visitor.at('a')['href']
+            v[:name]    = visitor.at('strong/a').text
+            v[:title]   = visitor.at('.headline').text.gsub('...',' ').split(' at ').first
+            v[:company] = visitor.at('.headline').text.gsub('...',' ').split(' at ')[1]
+            v
+          end
+        end
+      end
+      @recommended_visitors
+    end
+
+
+    private
+    
+    def get_companies(type)
+      companies = []
+      if @page.search(".position.experience.vevent.vcard.summary-#{type}").first
+        @page.search(".position.experience.vevent.vcard.summary-#{type}").each do |node|
+         
+          company              = {}
+          company[:title]       = node.at('h3').text.gsub(/\s+|\n/, ' ').strip if node.at('h3')
+          company[:company]     = node.at('h4').text.gsub(/\s+|\n/, ' ').strip if node.at('h4')
+          company[:description] = node.at(".description.#{type}-position").text.gsub(/\s+|\n/, ' ').strip if node.at(".description.#{type}-position")
+
+          company_link = node.at('h4/strong/a')['href'] if node.at('h4/strong/a')
+
+          result = get_company_details(company_link) 
+          companies << company.merge!(result)
+        end
+      end
+      companies
     end
 
     
-   
-    private
-
-    def get_first_name page
-      return page.at(".given-name").text.strip if page.search(".given-name").first
-    end
-
-    def get_last_name page
-      return page.at(".family-name").text.strip if page.search(".family-name").first
-    end
-
-    def get_title page
-      return page.at(".headline-title").text.gsub(/\s+/, " ").strip if page.search(".headline-title").first
-    end
-
-    def get_location page
-      return page.at(".locality").text.split(",").first.strip if page.search(".locality").first
-    end
-
-    def get_country page
-      return page.at(".locality").text.split(",").last.strip if page.search(".locality").first
-    end
-
-    def get_industry page
-      return page.at(".industry").text.gsub(/\s+/, " ").strip if page.search(".industry").first
-    end
-
-    def get_summary(page)
-      page.at(".description.summary").text.gsub(/\s+/, " ").strip if page.search(".description.summary").first
-    end
-
-
-    def get_picture page
-      return page.at("#profile-picture/img.photo").attributes['src'].value.strip if page.search("#profile-picture/img.photo").first
-    end
-
-    def get_skills(page)
-      page.search('.competency.show-bean').map{|skill|skill.text.strip if skill.text} rescue nil
-    end
-
-    def get_company_url(node)
-      result={}
-      if node.at("h4/strong/a")
-        link = node.at("h4/strong/a")["href"]
-        agent = Mechanize.new
-        agent.user_agent_alias = USER_AGENTS.sample
-        agent.max_history = 0
-        page = agent.get("http://www.linkedin.com"+link)
-        result[:linkedin_company_url] = "http://www.linkedin.com"+link
-        result[:url] = page.at(".basic-info/div/dl/dd/a").text if page.at(".basic-info/div/dl/dd/a")
-        node_2 = page.at(".basic-info").at(".content.inner-mod")
-        node_2.search("dd").zip(node_2.search("dt")).each do |value,title|
-          result[title.text.gsub(" ","_").downcase.to_sym] = value.text.strip
+    def get_company_details(link)
+      result = {:linkedin_company_url => "http://www.linkedin.com#{link}"}
+      page = http_client.get(result[:linkedin_company_url])
+      
+      result[:url] = page.at('.basic-info/div/dl/dd/a').text if page.at('.basic-info/div/dl/dd/a')
+      node_2 = page.at('.basic-info/.content.inner-mod')
+      if node_2
+        node_2.search('dd').zip(node_2.search('dt')).each do |value,title|
+          result[title.text.gsub(' ','_').downcase.to_sym] = value.text.strip
         end
-        result[:address] = page.at(".vcard.hq").at(".adr").text.gsub("\n"," ").strip if page.at(".vcard.hq")
       end
+      result[:address] = page.at('.vcard.hq').at('.adr').text.gsub("\n",' ').strip if page.at('.vcard.hq')
       result
     end
-
-    def get_past_companies page
-      past_cs=[]
-      if page.search(".position.experience.vevent.vcard.summary-past").first
-        page.search(".position.experience.vevent.vcard.summary-past").each do |past_company|
-          result = get_company_url past_company
-          url = result[:url]
-          title = past_company.at("h3").text.gsub(/\s+|\n/, " ").strip if past_company.at("h3")
-          company = past_company.at("h4").text.gsub(/\s+|\n/, " ").strip if past_company.at("h4")
-          description = past_company.at(".description.past-position").text.gsub(/\s+|\n/, " ").strip if past_company.at(".description.past-position")
-          p_company = {:past_company=>company,:past_title=> title,:past_company_website=>url,:description=>description}
-          p_company = p_company.merge(result)
-          past_cs << p_company
-        end
-        return past_cs
-      end
-    end
-
-    def get_current_companies page
-      current_cs = []
-      if page.search(".position.experience.vevent.vcard.summary-current").first
-        page.search(".position.experience.vevent.vcard.summary-current").each do |current_company|
-          result = get_company_url current_company
-          url = result[:url]
-          title = current_company.at("h3").text.gsub(/\s+|\n/, " ").strip if current_company.at("h3")
-          company = current_company.at("h4").text.gsub(/\s+|\n/, " ").strip if current_company.at("h4")
-          description = current_company.at(".description.current-position").text.gsub(/\s+|\n/, " ").strip if current_company.at(".description.current-position")
-          current_company = {:current_company=>company,:current_title=> title,:current_company_url=>url,:description=>description}
-          current_cs << current_company.merge(result)
-        end
-        return current_cs
-      end
-    end
-
-    def get_education(page)
-      education=[]
-      if page.search(".position.education.vevent.vcard").first
-        page.search(".position.education.vevent.vcard").each do |item|
-          name   = item.at("h3").text.gsub(/\s+|\n/, " ").strip if item.at("h3")
-          desc   = item.at("h4").text.gsub(/\s+|\n/, " ").strip if item.at("h4")
-          period = item.at(".period").text.gsub(/\s+|\n/, " ").strip if item.at(".period")
-          edu = {:name => name,:description => desc,:period => period}
-          education << edu
-        end
-        return education
-      end
-    end
-
-    def get_websites(page)
-      websites=[]
-      if page.search(".website").first
-        page.search(".website").each do |site|
-          url = site.at("a")["href"]
-          url = "http://www.linkedin.com"+url
-          url = CGI.parse(URI.parse(url).query)["url"]
-          websites << url
-        end
-        return websites.flatten!
-      end
-    end
-
-    def get_groups(page)
-      groups = []
-      if page.search(".group-data").first
-        page.search(".group-data").each do |item|
-          name = item.text.gsub(/\s+|\n/, " ").strip
-          link = "http://www.linkedin.com"+item.at("a")["href"]
-          groups << {:name=>name,:link=>link}
-        end
-        return groups
-      end
-    end
-
-    def get_organizations(page)
-      organizations = []
-      
-      if page.search('ul.organizations li.organization').first
-        page.search('ul.organizations li.organization').each do |item|
-
-          begin
-            name = item.search('h3').text.gsub(/\s+|\n/, " ").strip    
-            start_date = Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').first)
-            if item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last == 'Present'
-              end_date = nil
-            else
-              Date.parse(item.search('ul.specifics li').text.gsub(/\s+|\n/, " ").strip.split(' to ').last)
-            end
-
-            organizations << { name: name, start_date: start_date, end_date: end_date }
-          rescue   
-          end
-        end
-        return organizations
-      end
-    end
-
-    def get_languages(page)
-      languages = []
-      if page.search('ul.languages li.language').first
-        page.search('ul.languages li.language').each do |item|
-          begin
-            language = item.at('h3').text
-            proficiency = item.at('span.proficiency').text.gsub(/\s+|\n/, " ").strip
-            languages << { language: language, proficiency: proficiency }
-          rescue
-          end
-        end
-        return languages
-      end
-    end
-
-    def get_certifications(page)
-      certifications = []
-      query = 'ul.certifications li.certification'
-      months = 'January|February|March|April|May|June|July|August|September|November|December'
-      regex = /(#{months}) (\d{4})/
-
-      
-      if page.search(query).first
-        page.search(query).each do |item|
-          begin
-            item_text = item.text.gsub(/\s+|\n/, " ").strip
-            name = item_text.split(" #{item_text.scan(/#{months} \d{4}/)[0]}")[0]
-            authority = nil
-            license   = nil 
-            start_date = Date.parse(item_text.scan(regex)[0].join(' '))
-            includes_end_date = item_text.scan(regex).count > 1
-            end_date = includes_end_date ? Date.parse(item_text.scan(regex)[0].join(' ')) : nil 
-            certifications << { name: name, authority: authority, license: license, start_date: start_date, end_date: end_date }
-          rescue
-          end
-        end
-        return certifications
-      end
-
-    end
     
-
-    def get_recommended_visitors(page)
-      recommended_vs=[]
-      if page.search(".browsemap").first
-        page.at(".browsemap").at("ul").search("li").each do |visitor|
-          v = {}
-          v[:link]    = visitor.at('a')["href"]
-          v[:name]    = visitor.at('strong/a').text
-          v[:title]   = visitor.at('.headline').text.gsub("..."," ").split(" at ").first
-          v[:company] = visitor.at('.headline').text.gsub("..."," ").split(" at ")[1]
-          recommended_vs << v
-        end
-        return recommended_vs
+    def http_client
+      Mechanize.new do |agent|
+        agent.user_agent_alias = USER_AGENTS.sample
+        agent.max_history = 0
       end
     end
 
