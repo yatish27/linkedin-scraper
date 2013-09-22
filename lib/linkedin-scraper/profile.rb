@@ -4,7 +4,7 @@ module Linkedin
 
     USER_AGENTS = ['Windows IE 6', 'Windows IE 7', 'Windows Mozilla', 'Mac Safari', 'Mac FireFox', 'Mac Mozilla', 'Linux Mozilla', 'Linux Firefox', 'Linux Konqueror']
 
-    ATTRIBUTES = %w(name first_name last_name title location country industry summary skills picture certifications organizations linkedin_url past_companies current_companies recommended_visitors education groups websites languages)
+    ATTRIBUTES = %w(name first_name last_name title location country industry summary picture linkedin_url education groups websites languages skills certifications organizations past_companies current_companies recommended_visitors)
     
     attr_reader :page, :linkedin_url
     
@@ -177,6 +177,15 @@ module Linkedin
         end
       end
       @recommended_visitors
+    end
+
+    def to_json
+      require 'json'
+      hash = {}
+      ATTRIBUTES.each do |attribute|
+        hash[attribute.to_sym] = self.send(attribute.to_sym)
+      end
+      hash.to_json
     end
 
 
