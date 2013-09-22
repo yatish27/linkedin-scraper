@@ -7,17 +7,17 @@ Linkedin-scraper is a gem for scraping linkedin public profiles.
 Given the URL of the profile, it gets the name, country, title, area, current companies, past comapnies,organizations, skills, groups, etc
 
 
-Installation
-------------
+##Installation
+
 
 Install the gem from RubyGems:
 
     gem install linkedin-scraper
 
-This gem is tested on 1.9.2, 1.9.3, 2.0.0, jruby1.9, rbx1.9,
+This gem is tested on 1.9.2, 1.9.3, 2.0.0, JRuby1.9, rbx1.9,
 
-Usage
------
+##Usage
+
 
 Initialize a scraper instance
 
@@ -26,13 +26,15 @@ Initialize a scraper instance
 The returning object responds to the following methods
 
 
-    profile.first_name          # The First name of the contact
+    profile.first_name          # The first name of the contact
 
     profile.last_name           # The last name of the contact
 
     profile.name                # The full name of the profile
 
     profile.title               # The job title
+
+	profile.summary             # The summary of the profile
 
     profile.location            # The location of the contact
 
@@ -51,6 +53,8 @@ The returning object responds to the following methods
     profile.websites            # Array of websites
 
 	profile.groups              # Array of groups
+
+	profile.languages           # Array of languages
 
 	profile.certifications      # Array of certifications
 

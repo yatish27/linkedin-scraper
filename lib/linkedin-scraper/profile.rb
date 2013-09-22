@@ -36,10 +36,10 @@ module Linkedin
 
     def self.get_profile(url)
       begin
-        @agent = Mechanize.new
-        @agent.user_agent_alias = USER_AGENTS.sample
-        @agent.max_history = 0
-        page = @agent.get(url)
+        agent = Mechanize.new
+        agent.user_agent_alias = USER_AGENTS.sample
+        agent.max_history = 0
+        page = agent.get(url)
         return Linkedin::Profile.new(page, url)
       rescue => e
         puts e
@@ -98,10 +98,10 @@ module Linkedin
       result={}
       if node.at("h4/strong/a")
         link = node.at("h4/strong/a")["href"]
-        @agent = Mechanize.new
-        @agent.user_agent_alias = USER_AGENTS.sample
-        @agent.max_history = 0
-        page = @agent.get("http://www.linkedin.com"+link)
+        agent = Mechanize.new
+        agent.user_agent_alias = USER_AGENTS.sample
+        agent.max_history = 0
+        page = agent.get("http://www.linkedin.com"+link)
         result[:linkedin_company_url] = "http://www.linkedin.com"+link
         result[:url] = page.at(".basic-info/div/dl/dd/a").text if page.at(".basic-info/div/dl/dd/a")
         node_2 = page.at(".basic-info").at(".content.inner-mod")
