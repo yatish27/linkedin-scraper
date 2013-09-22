@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+require './lib/linkedin-scraper'
+profile = Linkedin::Profile.new(ARGV[0])
+puts profile.to_json
