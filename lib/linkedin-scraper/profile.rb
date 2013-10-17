@@ -5,9 +5,9 @@ module Linkedin
     USER_AGENTS = ['Windows IE 6', 'Windows IE 7', 'Windows Mozilla', 'Mac Safari', 'Mac FireFox', 'Mac Mozilla', 'Linux Mozilla', 'Linux Firefox', 'Linux Konqueror']
 
     ATTRIBUTES = %w(name first_name last_name title location country industry summary picture linkedin_url education groups websites languages skills certifications organizations past_companies current_companies recommended_visitors)
-    
+
     attr_reader :page, :linkedin_url
-    
+
     def self.get_profile(url)
       begin
         Linkedin::Profile.new(url)
@@ -20,12 +20,12 @@ module Linkedin
       @linkedin_url = url
       @page         = http_client.get(url)
     end
-    
+
     def name
       "#{first_name} #{last_name}"
     end
-   
-    def first_name 
+
+    def first_name
       @first_name ||= (@page.at('.given-name').text.strip if @page.at('.given-name'))
     end
 
@@ -33,7 +33,7 @@ module Linkedin
       @last_name ||= (@page.at('.family-name').text.strip if @page.at('.family-name'))
     end
 
-    def title 
+    def title
       @title ||= (@page.at('.headline-title').text.gsub(/\s+/, ' ').strip if @page.at('.headline-title'))
     end
 
@@ -77,12 +77,12 @@ module Linkedin
             name   = item.at('h3').text.gsub(/\s+|\n/, ' ').strip      if item.at('h3')
             desc   = item.at('h4').text.gsub(/\s+|\n/, ' ').strip      if item.at('h4')
             period = item.at('.period').text.gsub(/\s+|\n/, ' ').strip if item.at('.period')
-            
+
             {:name => name, :description => desc, :period => period}
           end
         end
       end
-       @education
+      @education
     end
 
     def websites
@@ -118,7 +118,7 @@ module Linkedin
         @organizations = []
         if @page.search('ul.organizations/li.organization').first
           @organizations = @page.search('ul.organizations/li.organization').map do |item|
-            
+
             name       = item.search('h3').text.gsub(/\s+|\n/, ' ').strip rescue nil
             start_date, end_date = item.search('ul.specifics li').text.gsub(/\s+|\n/, ' ').strip.split(' to ')
             start_date = Date.parse(start_date) rescue nil
@@ -153,21 +153,21 @@ module Linkedin
             authority  = item.at('.specifics/.org').text.gsub(/\s+|\n/, ' ').strip            rescue nil
             license    = item.at('.specifics/.licence-number').text.gsub(/\s+|\n/, ' ').strip rescue nil
             start_date = item.at('.specifics/.dtstart').text.gsub(/\s+|\n/, ' ').strip        rescue nil
-            
+
             {:name => name, :authority => authority, :license => license, :start_date => start_date}
           end
         end
       end
       @certifications
     end
-    
+
 
     def recommended_visitors
       unless @recommended_visitors
         @recommended_visitors = []
         if @page.at('.browsemap/.content/ul/li')
           @recommended_visitors = @page.search('.browsemap/.content/ul/li').map do |visitor|
-            v = {}  
+            v = {}
             v[:link]    = visitor.at('a')['href']
             v[:name]    = visitor.at('strong/a').text
             v[:title]   = visitor.at('.headline').text.gsub('...',' ').split(' at ').first
@@ -186,12 +186,12 @@ module Linkedin
 
 
     private
-    
+
     def get_companies(type)
       companies = []
       if @page.search(".position.experience.vevent.vcard.summary-#{type}").first
         @page.search(".position.experience.vevent.vcard.summary-#{type}").each do |node|
-         
+
           company               = {}
           company[:title]       = node.at('h3').text.gsub(/\s+|\n/, ' ').strip if node.at('h3')
           company[:company]     = node.at('h4').text.gsub(/\s+|\n/, ' ').strip if node.at('h4')
@@ -201,22 +201,22 @@ module Linkedin
 
           end_date  = node.at('.dtend').text.gsub(/\s+|\n/, ' ').strip rescue nil
           company[:end_date] = Date.parse(end_date) rescue nil
-          
+
 
           company_link = node.at('h4/strong/a')['href'] if node.at('h4/strong/a')
 
-          result = get_company_details(company_link) 
+          result = get_company_details(company_link)
           companies << company.merge!(result)
         end
       end
       companies
     end
 
-    
+
     def get_company_details(link)
       result = {:linkedin_company_url => "http://www.linkedin.com#{link}"}
       page = http_client.get(result[:linkedin_company_url])
-      
+
       result[:url] = page.at('.basic-info/div/dl/dd/a').text if page.at('.basic-info/div/dl/dd/a')
       node_2 = page.at('.basic-info/.content.inner-mod')
       if node_2
@@ -227,7 +227,7 @@ module Linkedin
       result[:address] = page.at('.vcard.hq').at('.adr').text.gsub("\n",' ').strip if page.at('.vcard.hq')
       result
     end
-    
+
     def http_client
       Mechanize.new do |agent|
         agent.user_agent_alias = USER_AGENTS.sample
