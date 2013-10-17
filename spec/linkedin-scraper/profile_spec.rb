@@ -148,5 +148,10 @@ describe Linkedin::Profile do
     end
   end
 
+  describe '#to_json' do
+    it 'returns the json format of the profile' do
+      @profile.to_json
+    end
+  end
 
 end

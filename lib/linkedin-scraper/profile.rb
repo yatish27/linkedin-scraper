@@ -181,11 +181,7 @@ module Linkedin
 
     def to_json
       require 'json'
-      hash = {}
-      ATTRIBUTES.each do |attribute|
-        hash[attribute.to_sym] = self.send(attribute.to_sym)
-      end
-      hash.to_json
+      ATTRIBUTES.reduce({}){ |hash,attr| hash[attr.to_sym] = self.send(attr.to_sym);hash }.to_json
     end
 
 
