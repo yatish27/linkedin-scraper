@@ -197,11 +197,11 @@ module Linkedin
           company[:company]     = node.at('h4').text.gsub(/\s+|\n/, ' ').strip if node.at('h4')
           company[:description] = node.at(".description.#{type}-position").text.gsub(/\s+|\n/, ' ').strip if node.at(".description.#{type}-position")
           start_date  = node.at('.dtstart').text.gsub(/\s+|\n/, ' ').strip rescue nil
-          company[:start_date] = Date.parse(start_date) rescue nil
+          company[:start_date] = parse_date(start_date) rescue nil
 
-          end_date  = node.at('.dtend').text.gsub(/\s+|\n/, ' ').strip rescue nil
-          company[:end_date] = Date.parse(end_date) rescue nil
-
+          end_date = node.at('.dtend').text.gsub(/\s+|\n/, ' ').strip rescue nil
+          end_date ||= node.at('.dtstamp').text.gsub(/\s+|\n/, ' ').strip rescue nil
+          company[:end_date] = parse_date(end_date) rescue nil
 
           company_link = node.at('h4/strong/a')['href'] if node.at('h4/strong/a')
 
@@ -212,6 +212,10 @@ module Linkedin
       companies
     end
 
+    def parse_date(date)
+      date = "#{date}-01-01" if date =~ /^(19|20)\d{2}$/
+      Date.parse(date)
+    end
 
     def get_company_details(link)
       result = {:linkedin_company_url => "http://www.linkedin.com#{link}"}
