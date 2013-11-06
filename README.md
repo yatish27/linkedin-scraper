@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/yatishmehta27/linkedin-scraper.png)](http://travis-ci.org/yatishmehta27/linkedin-scraper)
+[![Build Status](https://secure.travis-ci.org/yatish27/linkedin-scraper.png)](http://travis-ci.org/yatish27/linkedin-scraper)
 
 Linkedin Scraper
 ================
