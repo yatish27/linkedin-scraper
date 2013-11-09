@@ -252,7 +252,7 @@ For current and past comapnies it also provides the details of the companies lik
     ]
 
 
-The gem also comes with a binary and can be used from teh command line to get a json response of the scraped data. It takes the url as the first argument.
+The gem also comes with a binary and can be used from the command line to get a json response of the scraped data. It takes the url as the first argument.
 
     linkedin-scraper http://www.linkedin.com/in/jeffweiner08
 
