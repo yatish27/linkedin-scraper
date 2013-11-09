@@ -5,25 +5,25 @@ describe Linkedin::Profile do
 
 
   before(:all) do
-    @page = Nokogiri::HTML(File.open("spec/fixtures/jgrevich.html", 'r') { |f| f.read })
-    @profile = Linkedin::Profile.new("http://www.linkedin.com/in/jgrevich")
+    @page = Nokogiri::HTML(File.open('spec/fixtures/jgrevich.html', 'r') { |f| f.read })
+    @profile = Linkedin::Profile.new('http://www.linkedin.com/in/jgrevich')
   end
 
-  describe ".get_profile" do
-    it "Create an instance of Linkedin::Profile class" do
+  describe '.get_profile' do
+    it 'Create an instance of Linkedin::Profile class' do
       expect(@profile).to be_instance_of Linkedin::Profile
     end
   end
 
-  describe "#first_name" do
+  describe '#first_name' do
     it 'returns the first name of the profile' do
-      expect(@profile.first_name).to eq "Justin"
+      expect(@profile.first_name).to eq 'Justin'
     end
   end
 
-  describe "#last_name" do
+  describe '#last_name' do
     it 'returns the last name of the profile' do
-      expect(@profile.last_name).to eq "Grevich"
+      expect(@profile.last_name).to eq 'Grevich'
     end
   end
 
@@ -65,7 +65,7 @@ describe Linkedin::Profile do
 
   describe '#skills' do
     it 'returns the array of skills of the profile' do
-      skills = ["Ruby", "Ruby on Rails", "Web Development", "Web Applications", "CSS3", "HTML 5", "Shell Scripting", "Python", "Chef", "Git", "Subversion", "JavaScript", "Rspec", "jQuery", "Capistrano", "Sinatra", "CoffeeScript", "Haml", "Standards Compliance", "MySQL", "PostgreSQL", "Solr", "Sphinx", "Heroku", "Amazon Web Services (AWS)", "Information Security", "Vulnerability Assessment", "SAN", "ZFS", "Backup Solutions", "SaaS", "System Administration", "Project Management", "Linux", "Troubleshooting", "Network Security", "OS X", "Bash", "Cloud Computing", "Web Design", "MongoDB", "Z-Wave", "Home Automation"]
+      skills = ['Ruby', 'Ruby on Rails', 'Web Development', 'Web Applications', 'CSS3', 'HTML 5', 'Shell Scripting', 'Python', 'Chef', 'Git', 'Subversion', 'JavaScript', 'Rspec', 'jQuery', 'Capistrano', 'Sinatra', 'CoffeeScript', 'Haml', 'Standards Compliance', 'MySQL', 'PostgreSQL', 'Solr', 'Sphinx', 'Heroku', 'Amazon Web Services (AWS)', 'Information Security', 'Vulnerability Assessment', 'SAN', 'ZFS', 'Backup Solutions', 'SaaS', 'System Administration', 'Project Management', 'Linux', 'Troubleshooting', 'Network Security', 'OS X', 'Bash', 'Cloud Computing', 'Web Design', 'MongoDB', 'Z-Wave', 'Home Automation']
       expect(@profile.skills).to include(*skills)
     end
   end
@@ -100,20 +100,20 @@ describe Linkedin::Profile do
     end
   end
 
-  describe "#name" do
+  describe '#name' do
     it 'returns the first and last name of the profile' do
-      expect(@profile.name).to eq "Justin Grevich"
+      expect(@profile.name).to eq 'Justin Grevich'
     end
-  end  
+  end
 
-  describe "#organizations" do
+  describe '#organizations' do
     it 'returns an array of organization hashes for the profile' do
       expect(@profile.organizations.class).to eq Array
       expect(@profile.organizations.first[:name]).to eq 'San Diego Ruby'
     end
   end
 
-  describe "#languages" do
+  describe '#languages' do
     it 'returns an array of languages hashes' do
       expect(@profile.languages.class).to eq Array
     end
@@ -133,8 +133,8 @@ describe Linkedin::Profile do
         end
       end
     end # context 'with language data' do
-    
-  end # describe ".languages" do
+
+  end # describe '.languages' do
 
   describe '#recommended_visitors' do
     it 'returns the array of hashes of recommended visitors' do

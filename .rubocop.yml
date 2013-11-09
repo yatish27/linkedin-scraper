@@ -1,0 +1,11 @@
+Documentation:
+  Enabled: false
+
+DotPosition:
+  Enabled: false
+
+LineLength:
+  Enabled: false
+
+MethodLength:
+  Enabled: false
