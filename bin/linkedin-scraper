@@ -1,4 +1,4 @@
 
-require './lib/linkedin-scraper'
+require './lib/linkedin-scraper.rb'
 profile = Linkedin::Profile.new(ARGV[0])
 puts profile.to_json
