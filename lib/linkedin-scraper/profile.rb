@@ -103,7 +103,7 @@ module Linkedin
       unless @groups
         @groups = []
         if page.search('.group-data').first
-          @groups = page.search('.group-data').each do |item|
+          @groups = page.search('.group-data').map do |item|
             name = item.text.gsub(/\s+|\n/, ' ').strip
             link = "http://www.linkedin.com#{item.at('a')['href']}"
             {:name => name, :link => link}
