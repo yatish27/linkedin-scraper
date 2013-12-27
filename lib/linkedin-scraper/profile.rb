@@ -70,85 +70,51 @@ module Linkedin
     end
 
     def education
-      unless @education
-        @education = []
-        if @page.search('.position.education.vevent.vcard').first
-          @education = @page.search('.position.education.vevent.vcard').map do |item|
-            name   = item.at('h3').text.gsub(/\s+|\n/, ' ').strip      if item.at('h3')
-            desc   = item.at('h4').text.gsub(/\s+|\n/, ' ').strip      if item.at('h4')
-            period = item.at('.period').text.gsub(/\s+|\n/, ' ').strip if item.at('.period')
+      @education ||= @page.search('.position.education.vevent.vcard').map do |item|
+        name   = item.at('h3').text.gsub(/\s+|\n/, ' ').strip      if item.at('h3')
+        desc   = item.at('h4').text.gsub(/\s+|\n/, ' ').strip      if item.at('h4')
+        period = item.at('.period').text.gsub(/\s+|\n/, ' ').strip if item.at('.period')
 
-            {:name => name, :description => desc, :period => period}
-          end
-        end
+        {:name => name, :description => desc, :period => period}
       end
-      @education
     end
 
     def websites
-      unless @websites
-        @websites = []
-        if @page.search('.website').first
-          @websites = @page.search('.website').map do |site|
-            url = site.at('a')['href']
-            url = "http://www.linkedin.com#{url}"
-            CGI.parse(URI.parse(url).query)['url']
-          end.flatten!
-        end
+      @websites ||=  @page.search('.website').flat_map do |site|
+        url = "http://www.linkedin.com#{site.at('a')['href']}"
+        CGI.parse(URI.parse(url).query)['url']
       end
-      @websites
+
     end
 
     def groups
-      unless @groups
-        @groups = []
-        if page.search('.group-data').first
-          @groups = page.search('.group-data').map do |item|
-            name = item.text.gsub(/\s+|\n/, ' ').strip
-            link = "http://www.linkedin.com#{item.at('a')['href']}"
-            {:name => name, :link => link}
-          end
-        end
+      @groups ||= @page.search('.group-data').map do |item|
+        name = item.text.gsub(/\s+|\n/, ' ').strip
+        link = "http://www.linkedin.com#{item.at('a')['href']}"
+        {:name => name, :link => link}
       end
-      @groups
     end
 
     def organizations
-      unless @organizations
-        @organizations = []
-        if @page.search('ul.organizations/li.organization').first
-          @organizations = @page.search('ul.organizations/li.organization').map do |item|
-
-            name       = item.search('h3').text.gsub(/\s+|\n/, ' ').strip rescue nil
-            start_date, end_date = item.search('ul.specifics li').text.gsub(/\s+|\n/, ' ').strip.split(' to ')
-            start_date = Date.parse(start_date) rescue nil
-            end_date   = Date.parse(end_date)   rescue nil
-            {:name => name, :start_date => start_date, :end_date => end_date}
-          end
-        end
+      @organizations ||= @page.search('ul.organizations/li.organization').map do |item|
+        name       = item.search('h3').text.gsub(/\s+|\n/, ' ').strip rescue nil
+        start_date, end_date = item.search('ul.specifics li').text.gsub(/\s+|\n/, ' ').strip.split(' to ')
+        start_date = Date.parse(start_date) rescue nil
+        end_date   = Date.parse(end_date)   rescue nil
+        {:name => name, :start_date => start_date, :end_date => end_date}
       end
-      @organizations
     end
 
     def languages
-      unless @languages
-        @languages = []
-        if @page.at('ul.languages/li.language')
-          @languages = @page.search('ul.languages/li.language').map do |item|
-            language    = item.at('h3').text rescue nil
-            proficiency = item.at('span.proficiency').text.gsub(/\s+|\n/, ' ').strip rescue nil
-            {:language=> language, :proficiency => proficiency }
-          end
-        end
+      @languages ||= @page.search('ul.languages/li.language').map do |item|
+        language    = item.at('h3').text rescue nil
+        proficiency = item.at('span.proficiency').text.gsub(/\s+|\n/, ' ').strip rescue nil
+        {:language=> language, :proficiency => proficiency }
       end
-      @languages
     end
 
     def certifications
-      unless @certtifications
-        @certifications = []
-        if @page.at('ul.certifications/li.certification')
-          @certifications = @page.search('ul.certifications/li.certification').map do |item|
+        @certifications ||= @page.search('ul.certifications/li.certification').map do |item|
             name       = item.at('h3').text.gsub(/\s+|\n/, ' ').strip                         rescue nil
             authority  = item.at('.specifics/.org').text.gsub(/\s+|\n/, ' ').strip            rescue nil
             license    = item.at('.specifics/.licence-number').text.gsub(/\s+|\n/, ' ').strip rescue nil
@@ -156,27 +122,19 @@ module Linkedin
 
             {:name => name, :authority => authority, :license => license, :start_date => start_date}
           end
-        end
-      end
-      @certifications
+
     end
 
 
     def recommended_visitors
-      unless @recommended_visitors
-        @recommended_visitors = []
-        if @page.at('.browsemap/.content/ul/li')
-          @recommended_visitors = @page.search('.browsemap/.content/ul/li').map do |visitor|
-            v = {}
-            v[:link]    = visitor.at('a')['href']
-            v[:name]    = visitor.at('strong/a').text
-            v[:title]   = visitor.at('.headline').text.gsub('...',' ').split(' at ').first
-            v[:company] = visitor.at('.headline').text.gsub('...',' ').split(' at ')[1]
-            v
-          end
-        end
+      @recommended_visitors ||= @page.search('.browsemap/.content/ul/li').map do |visitor|
+        v = {}
+        v[:link]    = visitor.at('a')['href']
+        v[:name]    = visitor.at('strong/a').text
+        v[:title]   = visitor.at('.headline').text.gsub('...',' ').split(' at ').first
+        v[:company] = visitor.at('.headline').text.gsub('...',' ').split(' at ')[1]
+        v
       end
-      @recommended_visitors
     end
 
     def to_json
