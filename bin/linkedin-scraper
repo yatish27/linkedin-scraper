@@ -2,4 +2,5 @@
 
 require_relative '../lib/linkedin-scraper'
 profile = Linkedin::Profile.new(ARGV[0])
-puts profile.to_json
+puts JSON.pretty_generate JSON.parse(profile.to_json)
+ 
