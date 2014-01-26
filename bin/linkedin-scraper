@@ -3,4 +3,3 @@
 require_relative '../lib/linkedin-scraper'
 profile = Linkedin::Profile.new(ARGV[0])
 puts JSON.pretty_generate JSON.parse(profile.to_json)
- 
