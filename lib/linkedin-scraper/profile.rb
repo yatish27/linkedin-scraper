@@ -155,10 +155,10 @@ module Linkedin
           company[:company]     = node.at('h4').text.gsub(/\s+|\n/, ' ').strip if node.at('h4')
           company[:description] = node.at(".description.#{type}-position").text.gsub(/\s+|\n/, ' ').strip if node.at(".description.#{type}-position")
 
-          start_date  = node.at('.dtstart')['title']
+          start_date  = node.at('.dtstart')['title'] rescue nil
           company[:start_date] = parse_date(start_date) rescue nil
 
-          end_date = node.at('.dtend')['title']
+          end_date = node.at('.dtend')['title'] rescue nil
           company[:end_date] = parse_date(end_date) rescue nil
 
           company_link = node.at('h4/strong/a')['href'] if node.at('h4/strong/a')
