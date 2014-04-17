@@ -8,17 +8,17 @@ module Linkedin
 
     attr_reader :page, :linkedin_url
 
-    def self.get_profile(url)
+    def self.get_profile(url, proxy_ip, proxy_port)
       begin
-        Linkedin::Profile.new(url)
+        Linkedin::Profile.new(url, proxy_ip, proxy_port)
       rescue => e
         puts e
       end
     end
 
-    def initialize(url)
+    def initialize(url, proxy_ip, proxy_port)
       @linkedin_url = url
-      @page         = http_client.get(url)
+      @page         = http_client(proxy_ip, proxy_port).get(url)
     end
 
     def name
@@ -190,9 +190,10 @@ module Linkedin
       result
     end
 
-    def http_client
+    def http_client(proxy_ip, proxy_port)
       Mechanize.new do |agent|
         agent.user_agent_alias = USER_AGENTS.sample
+        agent.set_proxy(proxy_ip, proxy_port)
         agent.max_history = 0
       end
     end
