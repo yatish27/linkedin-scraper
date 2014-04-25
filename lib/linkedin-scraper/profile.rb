@@ -11,7 +11,7 @@ module Linkedin
     def self.get_profile(url, ip_info = {})
       begin
         unless ip_info.empty?
-          Linkedin::Profile.new(url, {ip_info[:proxy_ip], ip_info[:proxy_port]})
+          Linkedin::Profile.new(url, ip_info)
         else
           Linkedin::Profile.new(url)
         end
@@ -23,9 +23,9 @@ module Linkedin
     def initialize(url, ip_info = {})
       @linkedin_url = url
       unless ip_info.empty?
-        @page         = http_client(ip_info[:proxy_ip], ip_info[:proxy_port]).get(url)
+        @page         = http_client(ip_info).get(url)
       else
-        @page         = http_client.get(url)
+        @page         = http_client({}).get(url)
       end
     end
 
