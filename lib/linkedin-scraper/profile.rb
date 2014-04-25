@@ -25,7 +25,7 @@ module Linkedin
       unless ip_info.empty?
         @page         = http_client(ip_info[:proxy_ip], ip_info[:proxy_port]).get(url)
       else
-        @page         = http_client().get(url)
+        @page         = http_client.get(url)
       end
     end
 
