@@ -8,25 +8,18 @@ module Linkedin
 
     attr_reader :page, :linkedin_url
 
-    def self.get_profile(url, ip_info = {})
-      begin
-        unless ip_info.empty?
-          Linkedin::Profile.new(url, ip_info)
-        else
-          Linkedin::Profile.new(url)
-        end
-      rescue => e
-        puts e
-      end
+    def self.get_profile(url,ip_info = {})
+ #     begin
+          Linkedin::Profile.new(url,ip_info)
+#      rescue => e
+ #       puts e
+ #     end
     end
 
     def initialize(url, ip_info = {})
       @linkedin_url = url
-      unless ip_info.empty?
-        @page         = http_client(ip_info).get(url)
-      else
-        @page         = http_client({}).get(url)
-      end
+      @ip_info = ip_info
+      @page         = http_client.get(url)
     end
 
     def name
@@ -198,11 +191,11 @@ module Linkedin
       result
     end
 
-    def http_client(ip_info = {})
+    def http_client()
       Mechanize.new do |agent|
         agent.user_agent_alias = USER_AGENTS.sample
-        unless ip_info.empty?
-          agent.set_proxy(ip_info[:proxy_ip], ip_info[:proxy_port])
+        unless @ip_info.empty?
+          agent.set_proxy(@ip_info[:proxy_ip], @ip_info[:proxy_port])
         end
         agent.max_history = 0
       end
