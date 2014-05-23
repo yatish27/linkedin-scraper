@@ -9,11 +9,7 @@ module Linkedin
     attr_reader :page, :linkedin_url
 
     def self.get_profile(url,options = {})
- #     begin
           Linkedin::Profile.new(url,options)
-#      rescue => e
- #       puts e
- #     end
     end
 
     def initialize(url, options = {})
