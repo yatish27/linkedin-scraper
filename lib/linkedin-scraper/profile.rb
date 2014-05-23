@@ -187,7 +187,7 @@ module Linkedin
       result
     end
 
-    def http_client()
+    def http_client
       Mechanize.new do |agent|
         agent.user_agent_alias = USER_AGENTS.sample
         unless @options.empty?
