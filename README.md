@@ -20,9 +20,15 @@ This gem is tested on 1.9.2, 1.9.3, 2.0.0, JRuby1.9, rbx1.9,
 ##Usage
 
 
-Initialize a scraper instance
+Initialize a scraper instance:
 
     profile = Linkedin::Profile.get_profile("http://www.linkedin.com/in/jeffweiner08")
+
+With a http web-proxy:
+
+    profile = Linkedin::Profile.get_profile("http://www.linkedin.com/in/jeffweiner08", {:proxy_ip=>'127.0.0.1',:proxy_port=>'3128'})
+
+
 
 The returning object responds to the following methods
 

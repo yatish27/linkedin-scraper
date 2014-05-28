@@ -8,16 +8,13 @@ module Linkedin
 
     attr_reader :page, :linkedin_url
 
-    def self.get_profile(url)
-      begin
-        Linkedin::Profile.new(url)
-      rescue => e
-        puts e
-      end
+    def self.get_profile(url,options = {})
+          Linkedin::Profile.new(url,options)
     end
 
-    def initialize(url)
+    def initialize(url, options = {})
       @linkedin_url = url
+      @options = options
       @page         = http_client.get(url)
     end
 
@@ -193,6 +190,9 @@ module Linkedin
     def http_client
       Mechanize.new do |agent|
         agent.user_agent_alias = USER_AGENTS.sample
+        unless @options.empty?
+          agent.set_proxy(@options[:proxy_ip], @options[:proxy_port])
+        end
         agent.max_history = 0
       end
     end

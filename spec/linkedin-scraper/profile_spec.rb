@@ -49,7 +49,7 @@ describe Linkedin::Profile do
 
   describe '#summary' do
     it 'returns the summary of the profile' do
-      expect(profile.summary).to match(/Justin Grevich is a Presidential Innovation Fellow working/)
+      expect(profile.summary).to match(/Justin Grevich is a Presidential Innovation Fellow tasked/)
     end
   end
 
