@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/yatish27/linkedin-scraper.png)](http://travis-ci.org/yatish27/linkedin-scraper)
+[![Build Status](https://secure.travis-ci.org/alex-go/linkedin-scraper.png)](http://travis-ci.org/yatish27/linkedin-scraper)
 [![Gem Version](https://badge.fury.io/rb/linkedin-scraper.png)](http://badge.fury.io/rb/linkedin-scraper)
 
 Linkedin Scraper
