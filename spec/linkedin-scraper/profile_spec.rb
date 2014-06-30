@@ -2,9 +2,9 @@ require 'spec_helper'
 require 'linkedin-scraper'
 
 describe Linkedin::Profile do
- 
+
   let(:profile) { Linkedin::Profile.new('http://www.linkedin.com/in/jgrevich') }
-  
+
   describe '.get_profile' do
     it 'Create an instance of Linkedin::Profile class' do
       expect(profile).to be_instance_of Linkedin::Profile
@@ -31,13 +31,13 @@ describe Linkedin::Profile do
 
   describe '#location' do
     it 'returns the location of the profile' do
-      expect(profile.location).to eq 'Washington'
+      expect(profile.location).to eq 'Seattle'
     end
   end
 
   describe '#country' do
     it 'returns the country of the profile' do
-      expect(profile.country).to eq 'District Of Columbia'
+      expect(profile.country).to eq 'Washington'
     end
   end
 
@@ -49,7 +49,7 @@ describe Linkedin::Profile do
 
   describe '#summary' do
     it 'returns the summary of the profile' do
-      expect(profile.summary).to match(/Justin Grevich is a Presidential Innovation Fellow working/)
+      expect(profile.summary).to match(/Justin Grevich is a Presidential Innovation Fellow/)
     end
   end
 
