@@ -179,10 +179,10 @@ module Linkedin
       result = {:linkedin_company_url => "http://www.linkedin.com#{link}"}
       page = http_client.get(result[:linkedin_company_url])
 
-      result[:url] = page.at('.basic-info/div/dl/dd/a').text if page.at('.basic-info/div/dl/dd/a')
-      node_2 = page.at('.basic-info/.content.inner-mod')
+      result[:url] = page.at('.basic-info-about/ul/li/p/a').text if page.at('.basic-info-about/ul/li/p/a')
+      node_2 = page.at('.basic-info-about/ul')
       if node_2
-        node_2.search('dd').zip(node_2.search('dt')).each do |value,title|
+        node_2.search('p').zip(node_2.search('h4')).each do |value,title|
           result[title.text.gsub(' ','_').downcase.to_sym] = value.text.strip
         end
       end
