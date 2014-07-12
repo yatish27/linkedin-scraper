@@ -142,7 +142,6 @@ module Linkedin
       ATTRIBUTES.reduce({}){ |hash,attr| hash[attr.to_sym] = self.send(attr.to_sym);hash }.to_json
     end
 
-
     private
 
     def get_companies(type)
@@ -176,7 +175,7 @@ module Linkedin
     end
 
     def get_company_details(link)
-      result = {:linkedin_company_url => "http://www.linkedin.com#{link}"}
+      result = {:linkedin_company_url => get_linkedin_company_url(link)}
       page = http_client.get(result[:linkedin_company_url])
 
       result[:url] = page.at('.basic-info-about/ul/li/p/a').text if page.at('.basic-info-about/ul/li/p/a')
@@ -194,6 +193,16 @@ module Linkedin
       Mechanize.new do |agent|
         agent.user_agent_alias = USER_AGENTS.sample
         agent.max_history = 0
+      end
+    end
+
+    def get_linkedin_company_url link
+      http = /http:\/\/www.linkedin.com\//
+      https = /https:\/\/www.linkedin.com\//
+      if http.match(link) || https.match(link)
+        linkedin_company_url = link
+      else
+        linkedin_company_url = "http://www.linkedin.com/#{link}"
       end
     end
 
