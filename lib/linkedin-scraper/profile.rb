@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 module Linkedin
+
   class Profile
 
     USER_AGENTS = ['Windows IE 6', 'Windows IE 7', 'Windows Mozilla', 'Mac Safari', 'Mac FireFox', 'Mac Mozilla', 'Linux Mozilla', 'Linux Firefox', 'Linux Konqueror']
@@ -9,11 +10,9 @@ module Linkedin
     attr_reader :page, :linkedin_url
 
     def self.get_profile(url)
-      begin
-        Linkedin::Profile.new(url)
-      rescue => e
-        puts e
-      end
+      Linkedin::Profile.new(url)
+    rescue => e
+      puts e
     end
 
     def initialize(url)
@@ -58,7 +57,7 @@ module Linkedin
     end
 
     def skills
-      @skills ||= (@page.search('.competency.show-bean').map{|skill| skill.text.strip if skill.text} rescue nil)
+      @skills ||= (@page.search('.competency.show-bean').map { |skill| skill.text.strip if skill.text } rescue nil)
     end
 
     def past_companies
@@ -75,7 +74,7 @@ module Linkedin
         desc   = item.at('h4').text.gsub(/\s+|\n/, ' ').strip      if item.at('h4')
         period = item.at('.period').text.gsub(/\s+|\n/, ' ').strip if item.at('.period')
 
-        {:name => name, :description => desc, :period => period}
+        {:name => name, :description => desc, :period => period }
       end
     end
 
@@ -91,7 +90,7 @@ module Linkedin
       @groups ||= @page.search('.group-data').map do |item|
         name = item.text.gsub(/\s+|\n/, ' ').strip
         link = "http://www.linkedin.com#{item.at('a')['href']}"
-        {:name => name, :link => link}
+        { :name => name, :link => link }
       end
     end
 
@@ -101,7 +100,7 @@ module Linkedin
         start_date, end_date = item.search('ul.specifics li').text.gsub(/\s+|\n/, ' ').strip.split(' to ')
         start_date = Date.parse(start_date) rescue nil
         end_date   = Date.parse(end_date)   rescue nil
-        {:name => name, :start_date => start_date, :end_date => end_date}
+        { :name => name, :start_date => start_date, :end_date => end_date }
       end
     end
 
@@ -109,20 +108,19 @@ module Linkedin
       @languages ||= @page.search('ul.languages/li.language').map do |item|
         language    = item.at('h3').text rescue nil
         proficiency = item.at('span.proficiency').text.gsub(/\s+|\n/, ' ').strip rescue nil
-        {:language=> language, :proficiency => proficiency }
+        { :language => language, :proficiency => proficiency }
       end
     end
 
     def certifications
-        @certifications ||= @page.search('ul.certifications/li.certification').map do |item|
-            name       = item.at('h3').text.gsub(/\s+|\n/, ' ').strip                         rescue nil
-            authority  = item.at('.specifics/.org').text.gsub(/\s+|\n/, ' ').strip            rescue nil
-            license    = item.at('.specifics/.licence-number').text.gsub(/\s+|\n/, ' ').strip rescue nil
-            start_date = item.at('.specifics/.dtstart').text.gsub(/\s+|\n/, ' ').strip        rescue nil
+      @certifications ||= @page.search('ul.certifications/li.certification').map do |item|
+        name       = item.at('h3').text.gsub(/\s+|\n/, ' ').strip                         rescue nil
+        authority  = item.at('.specifics/.org').text.gsub(/\s+|\n/, ' ').strip            rescue nil
+        license    = item.at('.specifics/.licence-number').text.gsub(/\s+|\n/, ' ').strip rescue nil
+        start_date = item.at('.specifics/.dtstart').text.gsub(/\s+|\n/, ' ').strip        rescue nil
 
-            {:name => name, :authority => authority, :license => license, :start_date => start_date}
-          end
-
+        { :name => name, :authority => authority, :license => license, :start_date => start_date }
+      end
     end
 
 
@@ -131,8 +129,8 @@ module Linkedin
         v = {}
         v[:link]    = visitor.at('a')['href']
         v[:name]    = visitor.at('strong/a').text
-        v[:title]   = visitor.at('.headline').text.gsub('...',' ').split(' at ').first
-        v[:company] = visitor.at('.headline').text.gsub('...',' ').split(' at ')[1]
+        v[:title]   = visitor.at('.headline').text.gsub('...', ' ').split(' at ').first
+        v[:company] = visitor.at('.headline').text.gsub('...', ' ').split(' at ')[1]
         v
       end
     end
@@ -175,17 +173,17 @@ module Linkedin
     end
 
     def get_company_details(link)
-      result = {:linkedin_company_url => get_linkedin_company_url(link)}
+      result = { :linkedin_company_url => get_linkedin_company_url(link) }
       page = http_client.get(result[:linkedin_company_url])
 
       result[:url] = page.at('.basic-info-about/ul/li/p/a').text if page.at('.basic-info-about/ul/li/p/a')
       node_2 = page.at('.basic-info-about/ul')
       if node_2
-        node_2.search('p').zip(node_2.search('h4')).each do |value,title|
-          result[title.text.gsub(' ','_').downcase.to_sym] = value.text.strip
+        node_2.search('p').zip(node_2.search('h4')).each do |value, title|
+          result[title.text.gsub(' ', '_').downcase.to_sym] = value.text.strip
         end
       end
-      result[:address] = page.at('.vcard.hq').at('.adr').text.gsub("\n",' ').strip if page.at('.vcard.hq')
+      result[:address] = page.at('.vcard.hq').at('.adr').text.gsub("\n", ' ').strip if page.at('.vcard.hq')
       result
     end
 
@@ -196,15 +194,14 @@ module Linkedin
       end
     end
 
-    def get_linkedin_company_url link
-      http = /http:\/\/www.linkedin.com\//
-      https = /https:\/\/www.linkedin.com\//
+    def get_linkedin_company_url(link)
+      http = %r{http://www.linkedin.com/}
+      https = %r{https://www.linkedin.com/}
       if http.match(link) || https.match(link)
-        linkedin_company_url = link
+        link
       else
-        linkedin_company_url = "http://www.linkedin.com/#{link}"
+        "http://www.linkedin.com/#{link}"
       end
     end
-
   end
 end

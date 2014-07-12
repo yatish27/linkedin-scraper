@@ -131,7 +131,7 @@ describe Linkedin::Profile do
     end # context 'with language data' do
 
   end # describe '.languages' do
-  #WIP
+  # WIP
   describe '#recommended_visitors' do
     it 'returns the array of hashes of recommended visitors' do
       profile.recommended_visitors
