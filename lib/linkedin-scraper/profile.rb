@@ -25,15 +25,15 @@ module Linkedin
     end
 
     def first_name
-      @first_name ||= (@page.at('.given-name').text.strip if @page.at('.given-name'))
+      @first_name ||= (@page.at('.full-name').text.split(' ', 2)[0].strip if @page.at('.full-name'))
     end
 
     def last_name
-      @last_name ||= (@page.at('.family-name').text.strip if @page.at('.family-name'))
+      @last_name ||= (@page.at('.full-name').text.split(' ', 2)[1].strip if @page.at('.full-name'))
     end
 
     def title
-      @title ||= (@page.at('.headline-title').text.gsub(/\s+/, ' ').strip if @page.at('.headline-title'))
+      @title ||= (@page.at('.title').text.gsub(/\s+/, ' ').strip if @page.at('.title'))
     end
 
     def location
@@ -49,15 +49,15 @@ module Linkedin
     end
 
     def summary
-      @summary ||= (@page.at('.description.summary').text.gsub(/\s+/, ' ').strip if @page.at('.description.summary'))
+      @summary ||= (@page.at('.summary .description').text.gsub(/\s+/, ' ').strip if @page.at('.summary .description'))
     end
 
     def picture
-      @picture ||= (@page.at('#profile-picture/img.photo').attributes['src'].value.strip if @page.at('#profile-picture/img.photo'))
+      @picture ||= (@page.at('.profile-picture img').attributes['src'].value.strip if @page.at('.profile-picture img'))
     end
 
     def skills
-      @skills ||= (@page.search('.competency.show-bean').map { |skill| skill.text.strip if skill.text } rescue nil)
+      @skills ||= (@page.search('.skill-pill .endorse-item-name-text').map { |skill| skill.text.strip if skill.text } rescue nil)
     end
 
     def past_companies
@@ -69,17 +69,17 @@ module Linkedin
     end
 
     def education
-      @education ||= @page.search('.position.education.vevent.vcard').map do |item|
-        name   = item.at('h3').text.gsub(/\s+|\n/, ' ').strip      if item.at('h3')
-        desc   = item.at('h4').text.gsub(/\s+|\n/, ' ').strip      if item.at('h4')
-        period = item.at('.period').text.gsub(/\s+|\n/, ' ').strip if item.at('.period')
+      @education ||= @page.search('.background-education .education').map do |item|
+        name   = item.at('h4').text.gsub(/\s+|\n/, ' ').strip      if item.at('h4')
+        desc   = item.at('h5').text.gsub(/\s+|\n/, ' ').strip      if item.at('h5')
+        period = item.at('.education-date').text.gsub(/\s+|\n/, ' ').strip if item.at('.education-date')
 
         {:name => name, :description => desc, :period => period }
       end
     end
 
     def websites
-      @websites ||=  @page.search('.website').flat_map do |site|
+      @websites ||=  @page.search('#overview-summary-websites').flat_map do |site|
         url = "http://www.linkedin.com#{site.at('a')['href']}"
         CGI.parse(URI.parse(url).query)['url']
       end
@@ -87,7 +87,7 @@ module Linkedin
     end
 
     def groups
-      @groups ||= @page.search('.group-data').map do |item|
+      @groups ||= @page.search('.groups-name').map do |item|
         name = item.text.gsub(/\s+|\n/, ' ').strip
         link = "http://www.linkedin.com#{item.at('a')['href']}"
         { :name => name, :link => link }
@@ -95,8 +95,8 @@ module Linkedin
     end
 
     def organizations
-      @organizations ||= @page.search('ul.organizations/li.organization').map do |item|
-        name       = item.search('h3').text.gsub(/\s+|\n/, ' ').strip rescue nil
+      @organizations ||= @page.search('.background-organizations .organization p a').map do |item|
+        name       = item.text.gsub(/\s+|\n/, ' ').strip rescue nil
         start_date, end_date = item.search('ul.specifics li').text.gsub(/\s+|\n/, ' ').strip.split(' to ')
         start_date = Date.parse(start_date) rescue nil
         end_date   = Date.parse(end_date)   rescue nil
@@ -105,19 +105,19 @@ module Linkedin
     end
 
     def languages
-      @languages ||= @page.search('ul.languages/li.language').map do |item|
-        language    = item.at('h3').text rescue nil
-        proficiency = item.at('span.proficiency').text.gsub(/\s+|\n/, ' ').strip rescue nil
+      @languages ||= @page.search('.background-languages #languages ol li').map do |item|
+        language    = item.at('h4').text rescue nil
+        proficiency = item.at('div.languages-proficiency').text.gsub(/\s+|\n/, ' ').strip rescue nil
         { :language => language, :proficiency => proficiency }
       end
     end
 
     def certifications
-      @certifications ||= @page.search('ul.certifications/li.certification').map do |item|
-        name       = item.at('h3').text.gsub(/\s+|\n/, ' ').strip                         rescue nil
-        authority  = item.at('.specifics/.org').text.gsub(/\s+|\n/, ' ').strip            rescue nil
+      @certifications ||= @page.search('background-certifications').map do |item|
+        name       = item.at('h4').text.gsub(/\s+|\n/, ' ').strip                         rescue nil
+        authority  = item.at('h5').text.gsub(/\s+|\n/, ' ').strip            rescue nil
         license    = item.at('.specifics/.licence-number').text.gsub(/\s+|\n/, ' ').strip rescue nil
-        start_date = item.at('.specifics/.dtstart').text.gsub(/\s+|\n/, ' ').strip        rescue nil
+        start_date = item.at('.certification-date').text.gsub(/\s+|\n/, ' ').strip        rescue nil
 
         { :name => name, :authority => authority, :license => license, :start_date => start_date }
       end
@@ -125,12 +125,12 @@ module Linkedin
 
 
     def recommended_visitors
-      @recommended_visitors ||= @page.search('.browsemap/.content/ul/li').map do |visitor|
+      @recommended_visitors ||= @page.search('.insights-browse-map/ul/li').map do |visitor|
         v = {}
         v[:link]    = visitor.at('a')['href']
-        v[:name]    = visitor.at('strong/a').text
-        v[:title]   = visitor.at('.headline').text.gsub('...', ' ').split(' at ').first
-        v[:company] = visitor.at('.headline').text.gsub('...', ' ').split(' at ')[1]
+        v[:name]    = visitor.at('h4/a').text
+        v[:title]   = visitor.at('.browse-map-title').text.gsub('...', ' ').split(' at ').first
+        v[:company] = visitor.at('.browse-map-title').text.gsub('...', ' ').split(' at ')[1]
         v
       end
     end
@@ -144,13 +144,13 @@ module Linkedin
 
     def get_companies(type)
       companies = []
-      if @page.search(".position.experience.vevent.vcard.summary-#{type}").first
-        @page.search(".position.experience.vevent.vcard.summary-#{type}").each do |node|
+      if @page.search(".background-experience .#{type}-position").first
+        @page.search(".background-experience .#{type}-position").each do |node|
 
           company               = {}
-          company[:title]       = node.at('h3').text.gsub(/\s+|\n/, ' ').strip if node.at('h3')
-          company[:company]     = node.at('h4').text.gsub(/\s+|\n/, ' ').strip if node.at('h4')
-          company[:description] = node.at(".description.#{type}-position").text.gsub(/\s+|\n/, ' ').strip if node.at(".description.#{type}-position")
+          company[:title]       = node.at('h4').text.gsub(/\s+|\n/, ' ').strip if node.at('h4')
+          company[:company]     = node.at('h5').text.gsub(/\s+|\n/, ' ').strip if node.at('h5')
+          company[:description] = node.at(".description").text.gsub(/\s+|\n/, ' ').strip if node.at(".description")
 
           start_date  = node.at('.dtstart')['title'] rescue nil
           company[:start_date] = parse_date(start_date) rescue nil
@@ -158,7 +158,7 @@ module Linkedin
           end_date = node.at('.dtend')['title'] rescue nil
           company[:end_date] = parse_date(end_date) rescue nil
 
-          company_link = node.at('h4/strong/a')['href'] if node.at('h4/strong/a')
+          company_link = node.at('h5/a')['href'] if node.at('h5/a')
 
           result = get_company_details(company_link)
           companies << company.merge!(result)
