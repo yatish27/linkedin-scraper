@@ -149,16 +149,14 @@ module Linkedin
 
           company               = {}
           company[:title]       = node.at('h4').text.gsub(/\s+|\n/, ' ').strip if node.at('h4')
-          company[:company]     = node.at('h5').text.gsub(/\s+|\n/, ' ').strip if node.at('h5')
+          company[:company]     = node.at('h4').next.text.gsub(/\s+|\n/, ' ').strip if node.at('h4').next
           company[:description] = node.at(".description").text.gsub(/\s+|\n/, ' ').strip if node.at(".description")
 
-          start_date  = node.at('.dtstart')['title'] rescue nil
+          start_date, end_date  = node.at('.experience-date-locale').text.strip.split(" – ") rescue nil
           company[:start_date] = parse_date(start_date) rescue nil
-
-          end_date = node.at('.dtend')['title'] rescue nil
           company[:end_date] = parse_date(end_date) rescue nil
 
-          company_link = node.at('h5/a')['href'] if node.at('h5/a')
+          company_link = node.at('h4').next.at('a')['href'] if node.at('h4').next.at('a')
 
           result = get_company_details(company_link)
           companies << company.merge!(result)
