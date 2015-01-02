@@ -5,7 +5,27 @@ module Linkedin
 
     USER_AGENTS = ['Windows IE 6', 'Windows IE 7', 'Windows Mozilla', 'Mac Safari', 'Mac FireFox', 'Mac Mozilla', 'Linux Mozilla', 'Linux Firefox', 'Linux Konqueror']
 
-    ATTRIBUTES = %w(name first_name last_name title location country industry summary picture linkedin_url education groups websites languages skills certifications organizations past_companies current_companies recommended_visitors)
+    ATTRIBUTES = %w(
+    name
+    first_name 
+    last_name 
+    title 
+    location 
+    country 
+    industry 
+    summary 
+    picture 
+    linkedin_url 
+    education 
+    groups 
+    websites 
+    languages 
+    skills 
+    certifications 
+    organizations 
+    past_companies 
+    current_companies 
+    recommended_visitors)
 
     attr_reader :page, :linkedin_url
 
@@ -95,9 +115,9 @@ module Linkedin
     end
 
     def organizations
-      @organizations ||= @page.search('.background-organizations .organization p a').map do |item|
-        name       = item.text.gsub(/\s+|\n/, ' ').strip rescue nil
-        start_date, end_date = item.search('ul.specifics li').text.gsub(/\s+|\n/, ' ').strip.split(' to ')
+      @organizations ||= @page.search('#background-organizations .section-item').map do |item|
+        name       = item.at('.summary').text.gsub(/\s+|\n/, ' ').strip rescue nil
+        start_date, end_date = item.at('.organizations-date').text.gsub(/\s+|\n/, ' ').strip.split(' – ') rescue nil
         start_date = Date.parse(start_date) rescue nil
         end_date   = Date.parse(end_date)   rescue nil
         { :name => name, :start_date => start_date, :end_date => end_date }
