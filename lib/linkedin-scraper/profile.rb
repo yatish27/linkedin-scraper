@@ -7,24 +7,24 @@ module Linkedin
 
     ATTRIBUTES = %w(
     name
-    first_name 
-    last_name 
-    title 
-    location 
-    country 
-    industry 
-    summary 
-    picture 
-    linkedin_url 
-    education 
-    groups 
-    websites 
-    languages 
-    skills 
-    certifications 
-    organizations 
-    past_companies 
-    current_companies 
+    first_name
+    last_name
+    title
+    location
+    country
+    industry
+    summary
+    picture
+    linkedin_url
+    education
+    groups
+    websites
+    languages
+    skills
+    certifications
+    organizations
+    past_companies
+    current_companies
     recommended_visitors)
 
     attr_reader :page, :linkedin_url
