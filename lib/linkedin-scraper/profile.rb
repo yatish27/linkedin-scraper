@@ -155,6 +155,24 @@ module Linkedin
       end
     end
 
+    def projects
+      @projects ||= @page.search('.background-projects/div').map do |project|
+        project = project.at('div')
+
+        p = {}
+        start_date, end_date = project.at('.projects-date').text.gsub(/\s+|\n/, ' ').strip.split(' – ') rescue nil
+        start_date = Date.parse(start_date).to_s rescue nil
+        end_date   = Date.parse(end_date).to_s   rescue nil
+
+        p[:title] = project.at('hgroup/h4/span').text rescue nil
+        p[:start_date] = start_date
+        p[:end_date] = end_date
+        p[:description] = project.at('.description').text rescue nil
+        p[:associates] = project.at('.associated-list ul').children.map{ |c| c.at('a').text } rescue nil
+        p
+      end
+    end
+
     def to_json
       require 'json'
       ATTRIBUTES.reduce({}){ |hash,attr| hash[attr.to_sym] = self.send(attr.to_sym);hash }.to_json
