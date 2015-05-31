@@ -132,6 +132,16 @@ describe Linkedin::Profile do
 
   end # describe '.languages' do
 
+  describe '#projects' do
+    it 'returns the array of hashes of recommended visitors' do
+      expect(profile.projects.class).to eq Array
+    end
+
+    it 'has at least one element' do
+      expect(profile.projects.size).to be >= 1
+    end
+  end
+
   # WIP
   describe '#recommended_visitors' do
     it 'returns the array of hashes of recommended visitors' do
