@@ -91,10 +91,12 @@ module Linkedin
     def education
       @education ||= @page.search('.background-education .education').map do |item|
         name   = item.at('h4').text.gsub(/\s+|\n/, ' ').strip      if item.at('h4')
-        desc   = item.at('h5').text.gsub(/\s+|\n/, ' ').strip      if item.at('h5')
-        period = item.at('.education-date').text.gsub(/\s+|\n/, ' ').strip if item.at('.education-date')
-
-        {:name => name, :description => desc, :period => period }
+        desc   = item.search('h5').last.text.gsub(/\s+|\n/, ' ').strip      if item.search('h5').last
+        degree = item.search('h5').last.at('.degree').text.gsub(/\s+|\n/, ' ').strip.gsub(/,$/, '')      if item.search('h5').last.at('.degree')
+        major   = item.search('h5').last.at('.major').text.gsub(/\s+|\n/, ' ').strip      if item.search('h5').last.at('.major')
+        period = item.at('.education-date').text.gsub(/\s+|\n/, ' ').strip    if item.at('.education-date')
+        start_date, end_date  = item.at('.education-date').text.gsub(/\s+|\n/, ' ').strip.split(" – ") rescue nil
+        {:name => name, :description => desc, :degree => degree, :major => major, :period => period, :start_date => start_date, :end_date => end_date }
       end
     end
 
@@ -191,6 +193,7 @@ module Linkedin
           company[:description] = node.at(".description").text.gsub(/\s+|\n/, ' ').strip if node.at(".description")
 
           start_date, end_date  = node.at('.experience-date-locale').text.strip.split(" – ") rescue nil
+          company[:duration] = node.at('.experience-date-locale').text[/.*\((.*)\)/,1]
           company[:start_date] = parse_date(start_date) rescue nil
           company[:end_date] = parse_date(end_date) rescue nil
 
