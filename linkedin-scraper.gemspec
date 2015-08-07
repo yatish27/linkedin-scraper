@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path('../lib/linkedin-scraper/version', __FILE__)
+require File.expand_path('../lib/linkedin_scraper/version', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.authors       = ['Yatish Mehta']
