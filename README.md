@@ -4,8 +4,8 @@
 Linkedin Scraper
 ================
 
-Linkedin-scraper is a gem for scraping linkedin public profiles.
-Given the URL of the profile, it gets the name, country, title, area, current companies, past comapnies,organizations, skills, groups, etc
+Linkedin-scraper is a gem for scraping Linkedin public profiles.
+Given the URL of the profile, it gets the name, country, title, area, current companies, past companies,organizations, skills, groups, etc
 
 
 ##Installation
@@ -59,7 +59,7 @@ The returning object responds to the following methods
 
 	profile.certifications      # Array of certifications
 
-For current and past comapnies it also provides the details of the companies like comapny size, industry, address, etc 
+For current and past companies it also provides the details of the companies like company size, industry, address, etc 
 
     profile.current_companies
 
