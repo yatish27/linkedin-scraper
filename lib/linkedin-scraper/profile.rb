@@ -195,8 +195,7 @@ module Linkedin
           start_date, end_date  = node.at('.experience-date-locale').text.strip.split(" – ") rescue nil
           company[:duration] = node.at('.experience-date-locale').text[/.*\((.*)\)/,1]
           company[:start_date] = parse_date(start_date) rescue nil
-          company[:end_date] = parse_date(end_date) rescue nil
-
+          company[:end_date] = parse_date(end_date.partition('(').first) rescue nil
           company_link = node.at('h4').next.at('a')['href'] if node.at('h4').next.at('a')
 
           result = get_company_details(company_link)
