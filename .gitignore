@@ -19,3 +19,4 @@ tmp
 .ruby-version
 .ruby-gemset
 .projectile
+*.DS_Store
