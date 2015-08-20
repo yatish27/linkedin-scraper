@@ -109,6 +109,12 @@ describe Linkedin::Profile do
     end
   end
 
+  describe '#volunteering' do
+    it "returns list of profile's volunteering" do
+      expect(profile.volunteering.class).to eq Array
+    end
+  end
+
   describe '#recommendations' do
     it "returns list of profile's recommendations" do
       expect(profile.recommendations.class).to eq Array
