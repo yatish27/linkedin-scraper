@@ -128,4 +128,16 @@ describe Linkedin::Profile do
       expect(profile.recommendations.first).to include("Jeff Weiner is a mentor to me and a singularly effective champion of DonorsChoose.org.")
     end
   end
+
+  describe '#interests' do
+    it "returns list of profile's interests" do
+      expect(profile.interests.class).to eq Array
+    end
+  end
+
+  describe '#publications' do
+    it "returns list of profile's publications" do
+      expect(profile.publications.class).to eq Array
+    end
+  end
 end
