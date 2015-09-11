@@ -5,11 +5,11 @@ Linkedin Scraper
 ================
 
 Linkedin-scraper is a gem for scraping linkedin public profiles.
-Given the URL of the profile, it gets the name, country, title, area, current companies, past comapnies,organizations, skills, groups, etc
+Given the URL of the profile, it gets the name, country, title, area, current companies, past companies,
+organizations, skills, groups, etc
 
 
-##Installation
-
+## Installation
 
 Install the gem from RubyGems:
 
@@ -17,7 +17,7 @@ Install the gem from RubyGems:
 
 This gem is tested on 1.9.2, 1.9.3, 2.0.0, JRuby1.9, rbx1.9,
 
-##Usage
+## Usage
 
 
 Initialize a scraper instance
@@ -59,7 +59,7 @@ The returning object responds to the following methods
 
 	profile.certifications      # Array of certifications
 
-For current and past comapnies it also provides the details of the companies like comapny size, industry, address, etc 
+For current and past companies it also provides the details of the companies like company size, industry, address, etc
 
     profile.current_companies
 
@@ -252,8 +252,18 @@ For current and past comapnies it also provides the details of the companies lik
     ]
 
 
-The gem also comes with a binary and can be used from the command line to get a json response of the scraped data. It takes the url as the first argument.
+The gem also comes with a binary and can be used from the command line to get a json response of the scraped data.
+It takes the url as the first argument.
 
     linkedin-scraper http://www.linkedin.com/in/jeffweiner08
 
-You're welcome to fork this project and send pull requests
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/yatish27/linkedin-scraper.
+This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the
+[Contributor Covenant](contributor-covenant.org) code of conduct.
+
+
+## License
+
+The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
