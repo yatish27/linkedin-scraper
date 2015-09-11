@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-require_relative '../lib/linkedin-scraper'
+require_relative '../lib/linkedin_scraper'
 profile = Linkedin::Profile.new(ARGV[0])
 puts JSON.pretty_generate JSON.parse(profile.to_json)
