@@ -164,8 +164,8 @@ module Linkedin
 
         p[:title] = project.at("hgroup/h4 span:first-of-type").text rescue nil
         p[:link] =  project.at("hgroup/h4 a:first-of-type")['href'] rescue nil
-        p[:start_date] = parse_date(start_date).to_s rescue nil
-        p[:end_date] = parse_date(end_date).to_s   rescue nil
+        p[:start_date] = parse_date(start_date) rescue nil
+        p[:end_date] = parse_date(end_date)  rescue nil
         p[:description] = project.at(".description").text rescue nil
         p[:associates] = project.at(".associated-list ul").children.map{ |c| c.at("a").text } rescue nil
         p
