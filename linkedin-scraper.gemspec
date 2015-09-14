@@ -3,7 +3,7 @@ require File.expand_path('../lib/linkedin_scraper/version', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.authors       = ['Yatish Mehta']
-  gem.description   = %q{Scrapes the linkedin profile when a url is given }
+  gem.description   = %q{Scrapes the LinkedIn profile using the public url }
   gem.summary       = %q{when a url of  public linkedin profile page is given it scrapes the entire page and converts into a accessible object}
   gem.homepage      = 'https://github.com/yatishmehta27/linkedin-scraper'
   gem.files         = `git ls-files`.split($\)
@@ -13,9 +13,11 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
   gem.version       = Linkedin::Scraper::VERSION
 
-  gem.add_dependency(%q<mechanize>, ['>= 0'])
+  gem.license       = "MIT"
+
+  gem.add_dependency 'mechanize', '~> 0'
   
-  gem.add_development_dependency 'rspec', '>=0'
-  gem.add_development_dependency 'rake'
+  gem.add_development_dependency 'rspec', '~> 0'
+  gem.add_development_dependency 'rake', '~> 0'
 
 end
