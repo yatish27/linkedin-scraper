@@ -13,6 +13,7 @@ module Linkedin
     industry
     summary
     picture
+    projects 
     linkedin_url
     education
     groups
@@ -160,12 +161,11 @@ module Linkedin
 
         p = {}
         start_date, end_date = project.at(".projects-date").text.gsub(/\s+|\n/, " ").strip.split(" – ") rescue nil
-        start_date = Date.parse(start_date).to_s rescue nil
-        end_date   = Date.parse(end_date).to_s   rescue nil
 
-        p[:title] = project.at("hgroup/h4/span").text rescue nil
-        p[:start_date] = start_date
-        p[:end_date] = end_date
+        p[:title] = project.at("hgroup/h4 span:first-of-type").text rescue nil
+        p[:link] =  project.at("hgroup/h4 a:first-of-type")['href'] rescue nil
+        p[:start_date] = parse_date(start_date) rescue nil
+        p[:end_date] = parse_date(end_date)  rescue nil
         p[:description] = project.at(".description").text rescue nil
         p[:associates] = project.at(".associated-list ul").children.map{ |c| c.at("a").text } rescue nil
         p
