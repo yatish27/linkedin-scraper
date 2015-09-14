@@ -20,3 +20,4 @@ tmp
 .ruby-gemset
 .projectile
 *.DS_Store
+.idea/*
