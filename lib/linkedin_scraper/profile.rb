@@ -20,6 +20,7 @@ module Linkedin
     websites
     languages
     skills
+    courses 
     certifications
     organizations
     past_companies
@@ -172,6 +173,15 @@ module Linkedin
       end
     end
 
+    def courses
+    	@courses ||= @page.search('.background-courses .section-item').map do |institute|
+    	 i = {}
+    	 i[:name] = institute.at("h4").text rescue nil
+    	 i[:courses] = institute.at("ul.courses-listing").children.map { |course| course.text.strip if course.text } rescue nil
+    	 i
+    	end
+    end
+    
     def to_json
       require "json"
       ATTRIBUTES.reduce({}){ |hash,attr| hash[attr.to_sym] = self.send(attr.to_sym);hash }.to_json
