@@ -97,7 +97,7 @@ describe Linkedin::Profile do
   end
 
   describe '#connections' do
-    it 'return the number of connections' do
+    it 'returns the number of connections' do
       expect(profile.connections).to eq '500+'
     end
   end
