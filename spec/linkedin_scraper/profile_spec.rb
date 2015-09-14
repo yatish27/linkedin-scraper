@@ -77,6 +77,12 @@ describe Linkedin::Profile do
     end
   end
 
+  describe '#connections' do
+    it 'return the number of connections' do
+      expect(profile.connections).to eq '500+'
+    end
+  end
+
   describe '#recommended_visitors' do
     it 'returns recommended visitors' do
       expect(profile.recommended_visitors.class).to eq Array

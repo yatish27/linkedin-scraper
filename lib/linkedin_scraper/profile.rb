@@ -9,6 +9,7 @@ module Linkedin
     last_name
     title
     location
+    connections
     country
     industry
     summary
@@ -56,6 +57,10 @@ module Linkedin
 
     def location
       @location ||= (@page.at(".locality").text.split(",").first.strip if @page.at(".locality"))
+    end
+
+    def connections
+      @connections ||= (@page.at(".member-connections").text.match(/[0-9]+[\+]{0,1}/)[0])
     end
 
     def country
