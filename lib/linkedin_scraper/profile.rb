@@ -9,12 +9,12 @@ module Linkedin
     last_name
     title
     location
-    connections
+    number_of_connections
     country
     industry
     summary
     picture
-    projects 
+    projects
     linkedin_url
     education
     groups
@@ -60,7 +60,7 @@ module Linkedin
       @location ||= (@page.at(".locality").text.split(",").first.strip if @page.at(".locality"))
     end
 
-    def connections
+    def number_of_connections
       @connections ||= (@page.at(".member-connections").text.match(/[0-9]+[\+]{0,1}/)[0])
     end
 

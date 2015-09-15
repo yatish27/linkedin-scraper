@@ -59,6 +59,8 @@ The returning object responds to the following methods
 
 	profile.certifications      # Array of certifications
 
+  profile.number_of_connections # The number of connections as a string
+
 For current and past companies it also provides the details of the companies like company size, industry, address, etc
 
     profile.current_companies
