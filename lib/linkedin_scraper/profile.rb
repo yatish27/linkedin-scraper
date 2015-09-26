@@ -175,10 +175,10 @@ module Linkedin
 
     def courses
     	@courses ||= @page.search('.background-courses .section-item').map do |institute|
-    	 i = {}
-    	 i[:name] = institute.at("h4").text rescue nil
-    	 i[:courses] = institute.at("ul.courses-listing").children.map { |course| course.text.strip if course.text } rescue nil
-    	 i
+    	 c = {}
+    	 c[:name] = institute.at("h4").text rescue nil
+    	 c[:courses] = institute.at("ul.courses-listing").children.map { |course| course.text.strip if course.text } rescue nil
+    	 c
     	end
     end
     
