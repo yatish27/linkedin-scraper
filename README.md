@@ -58,6 +58,8 @@ The returning object responds to the following methods
 	profile.languages           # Array of languages
 
 	profile.certifications      # Array of certifications
+	
+	profile.courses #Array of instutions containing institution and courses in a hash
 
 For current and past companies it also provides the details of the companies like company size, industry, address, etc
 
