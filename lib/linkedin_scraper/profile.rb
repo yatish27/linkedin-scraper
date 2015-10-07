@@ -77,7 +77,7 @@ module Linkedin
     end
 
     def picture
-      @picture ||= (@page.at(".profile-picture img").attributes["src"].value.strip if @page.at(".profile-picture img"))
+      @picture ||= (@page.at('.profile-picture img').attributes.values_at('src','data-delayed-url').compact.first.value.strip if @page.at('.profile-picture img'))
     end
 
     def skills
