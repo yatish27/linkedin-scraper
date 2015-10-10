@@ -107,4 +107,12 @@ describe Linkedin::Profile do
       expect(profile.recommended_visitors.class).to eq Array
     end
   end
+
+  describe '#get_companies' do
+    it 'doesnt invoke an http call to get additional company details' do
+      expect(profile).not_to receive(:get_company_details)
+      result = profile.current_companies(false)
+    end
+  end
+
 end

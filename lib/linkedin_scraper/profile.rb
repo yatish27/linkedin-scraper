@@ -84,12 +84,12 @@ module Linkedin
       @skills ||= (@page.search(".skill-pill .endorse-item-name-text").map { |skill| skill.text.strip if skill.text } rescue nil)
     end
 
-    def past_companies
-      @past_companies ||= get_companies("past")
+    def past_companies(get_additional_details = true)
+      @past_companies ||= get_companies("past", get_additional_details)
     end
 
-    def current_companies
-      @current_companies ||= get_companies("current")
+    def current_companies(get_additional_details = true)
+      @current_companies ||= get_companies("current", get_additional_details)
     end
 
     def education
@@ -184,7 +184,7 @@ module Linkedin
 
     private
 
-    def get_companies(type)
+    def get_companies(type, get_additional_details)
       companies = []
       if @page.search(".background-experience .#{type}-position").first
         @page.search(".background-experience .#{type}-position").each do |node|
@@ -201,7 +201,7 @@ module Linkedin
 
           company_link = node.at("h4").next.at("a")["href"] if node.at("h4").next.at("a")
 
-          result = get_company_details(company_link)
+          result = (get_additional_details ? get_company_details(company_link) : {})
           companies << company.merge!(result)
         end
       end

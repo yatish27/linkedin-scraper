@@ -35,7 +35,7 @@ The returning object responds to the following methods
 
     profile.title               # The job title
 
-	profile.summary             # The summary of the profile
+    profile.summary             # The summary of the profile
 
     profile.location            # The location of the contact
 
@@ -53,13 +53,13 @@ The returning object responds to the following methods
 
     profile.websites            # Array of websites
 
-	profile.groups              # Array of groups
+    profile.groups              # Array of groups
 
-	profile.languages           # Array of languages
+    profile.languages           # Array of languages
 
-	profile.certifications      # Array of certifications
+    profile.certifications      # Array of certifications
 
-	profile.number_of_connections # The number of connections as a string
+    profile.number_of_connections # The number of connections as a string
 
 
 For current and past companies it also provides the details of the companies like company size, industry, address, etc
@@ -253,6 +253,10 @@ For current and past companies it also provides the details of the companies lik
         :company => nil
     }
     ]
+
+You can also get only the company names without additional information on them. This will disable additional HTTP calls to retrieve company details.
+
+    profile.current_companies(false) or profile.past_companies(false)
 
 
 The gem also comes with a binary and can be used from the command line to get a json response of the scraped data.
