@@ -85,11 +85,11 @@ module Linkedin
     end
 
     def past_companies
-      @past_companies ||= get_companies("past")
+      @past_companies ||= get_companies().reject { |c| c[:end_date] == "Present"}
     end
 
     def current_companies
-      @current_companies ||= get_companies("current")
+      @current_companies ||= get_companies().find_all{ |c| c[:end_date] == "Present"}
     end
 
     def education
@@ -154,10 +154,10 @@ module Linkedin
         v = {}
         v[:link] = visitor.at("a")["href"]
         v[:name] = visitor.at("h4/a").text
-        if visitor.at(".headline")  
-        v[:title] = visitor.at(".headline").text.gsub("...", " ").split(" at ").first
-        v[:company] = visitor.at(".headline").text.gsub("...", " ").split(" at ")[1]
-      end
+        if visitor.at(".headline")
+          v[:title] = visitor.at(".headline").text.gsub("...", " ").split(" at ").first
+          v[:company] = visitor.at(".headline").text.gsub("...", " ").split(" at ")[1]
+        end
         v
       end
     end
@@ -183,29 +183,39 @@ module Linkedin
     end
 
     private
+    #TODO Bad code Hot fix
+    def get_companies()
+      if @companies
+        return @companies
+      else
+        @companies = []
+      end
 
-    def get_companies(type)
-      companies = []
-      if @page.search(".background-experience .#{type}-position").first
-        @page.search(".background-experience .#{type}-position").each do |node|
+      @page.search(".positions .position").each do |node|
+        company = {}
+        company[:title] = node.at(".item-title").text.gsub(/\s+|\n/, " ").strip if node.at(".item-title")
+        company[:company] = node.at(".item-subtitle").text.gsub(/\s+|\n/, " ").strip if node.at(".item-subtitle")
+        company[:description] = node.at(".description").text.gsub(/\s+|\n/, " ").strip if node.at(".description")
 
-          company = {}
-          company[:title] = node.at("h4").text.gsub(/\s+|\n/, " ").strip if node.at("h4")
-          company[:company] = node.at("h4").next.text.gsub(/\s+|\n/, " ").strip if node.at("h4").next
-          company[:description] = node.at(".description").text.gsub(/\s+|\n/, " ").strip if node.at(".description")
+        start_date, end_date = node.at(".meta").text.strip.split(" – ") rescue nil
+        company[:duration] = node.at(".meta").text[/.*\((.*)\)/, 1]
+        company[:start_date] = parse_date(start_date) rescue nil
+        if end_date.match(/Present/)
+          company[:end_date] = "Present"
+        else
+          company[:start_date] = parse_date(end_date) rescue nil
+        end
 
-          start_date, end_date = node.at(".experience-date-locale").text.strip.split(" – ") rescue nil
-          company[:duration] = node.at(".experience-date-locale").text[/.*\((.*)\)/, 1]
-          company[:start_date] = parse_date(start_date) rescue nil
-          company[:end_date] = parse_date(end_date) rescue nil
-
-          company_link = node.at("h4").next.at("a")["href"] if node.at("h4").next.at("a")
-
+        company_link = node.at(".item-subtitle").at("a")["href"] rescue nil
+        if company_link
           result = get_company_details(company_link)
-          companies << company.merge!(result)
+          @companies << company.merge!(result)
+        else
+          @companies << company
         end
       end
-      companies
+
+      @companies
     end
 
     def parse_date(date)
