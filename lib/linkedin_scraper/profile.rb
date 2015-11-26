@@ -45,11 +45,11 @@ module Linkedin
     end
 
     def first_name
-      @first_name ||= (@page.at(".full-name").text.split(" ", 2)[0].strip if @page.at(".full-name"))
+      @first_name ||= (@page.at(".fn").text.split(" ", 2)[0].strip if @page.at(".fn"))
     end
 
     def last_name
-      @last_name ||= (@page.at(".full-name").text.split(" ", 2)[1].strip if @page.at(".full-name"))
+      @last_name ||= (@page.at(".fn").text.split(" ", 2)[1].strip if @page.at(".fn"))
     end
 
     def title
@@ -61,7 +61,7 @@ module Linkedin
     end
 
     def number_of_connections
-      @connections ||= (@page.at(".member-connections").text.match(/[0-9]+[\+]{0,1}/)[0])
+      @connections ||= (@page.at(".member-connections").text.match(/[0-9]+[\+]{0,1}/)[0]) if @page.at(".member-connections")
     end
 
     def country
@@ -69,11 +69,11 @@ module Linkedin
     end
 
     def industry
-      @industry ||= (@page.at(".industry").text.gsub(/\s+/, " ").strip if @page.at(".industry"))
+      @industry ||= (@page.search("#demographics .descriptor")[-1].text.gsub(/\s+/, " ").strip if @page.at("#demographics .descriptor"))
     end
 
     def summary
-      @summary ||= (@page.at(".summary .description").text.gsub(/\s+/, " ").strip if @page.at(".summary .description"))
+      @summary ||= (@page.at("#summary .description").text.gsub(/\s+/, " ").strip if @page.at("#summary .description"))
     end
 
     def picture
@@ -81,7 +81,7 @@ module Linkedin
     end
 
     def skills
-      @skills ||= (@page.search(".skill-pill .endorse-item-name-text").map { |skill| skill.text.strip if skill.text } rescue nil)
+      @skills ||= (@page.search(".pills .skill").map { |skill| skill.text.strip if skill.text } rescue nil)
     end
 
     def past_companies
@@ -93,28 +93,28 @@ module Linkedin
     end
 
     def education
-      @education ||= @page.search(".background-education .education").map do |item|
+      @education ||= @page.search(".schools .school").map do |item|
         name = item.at("h4").text.gsub(/\s+|\n/, " ").strip if item.at("h4")
         desc = item.search("h5").last.text.gsub(/\s+|\n/, " ").strip if item.search("h5").last
         degree = item.search("h5").last.at(".degree").text.gsub(/\s+|\n/, " ").strip.gsub(/,$/, "") if item.search("h5").last.at(".degree")
         major = item.search("h5").last.at(".major").text.gsub(/\s+|\n/, " ").strip      if item.search("h5").last.at(".major")
-        period = item.at(".education-date").text.gsub(/\s+|\n/, " ").strip if item.at(".education-date")
-        start_date, end_date = item.at(".education-date").text.gsub(/\s+|\n/, " ").strip.split(" – ") rescue nil
+        period = item.at(".date-range").text.gsub(/\s+|\n/, " ").strip if item.at(".date-range")
+        start_date, end_date = item.at(".date-range").text.gsub(/\s+|\n/, " ").strip.split(" – ") rescue nil
         {:name => name, :description => desc, :degree => degree, :major => major, :period => period, :start_date => start_date, :end_date => end_date }
       end
     end
 
     def websites
-      @websites ||= @page.search("#overview-summary-websites").flat_map do |site|
-        url = "http://www.linkedin.com#{site.at("a")["href"]}"
+      @websites ||= @page.search(".websites li").flat_map do |site|
+        url = site.at("a")["href"]
         CGI.parse(URI.parse(url).query)["url"]
       end
     end
 
     def groups
-      @groups ||= @page.search(".groups-name").map do |item|
+      @groups ||= @page.search("#groups .group .item-title").map do |item|
         name = item.text.gsub(/\s+|\n/, " ").strip
-        link = "http://www.linkedin.com#{item.at("a")["href"]}"
+        link = item.at("a")['href']
         { :name => name, :link => link }
       end
     end
@@ -150,29 +150,29 @@ module Linkedin
 
 
     def recommended_visitors
-      @recommended_visitors ||= @page.search(".insights-browse-map/ul/li").map do |visitor|
+      @recommended_visitors ||= @page.search(".insights .browse-map/ul/li.profile-card").map do |visitor|
         v = {}
         v[:link] = visitor.at("a")["href"]
         v[:name] = visitor.at("h4/a").text
-        v[:title] = visitor.at(".browse-map-title").text.gsub("...", " ").split(" at ").first
-        v[:company] = visitor.at(".browse-map-title").text.gsub("...", " ").split(" at ")[1]
+        if visitor.at(".headline")  
+        v[:title] = visitor.at(".headline").text.gsub("...", " ").split(" at ").first
+        v[:company] = visitor.at(".headline").text.gsub("...", " ").split(" at ")[1]
+      end
         v
       end
     end
 
     def projects
-      @projects ||= @page.search(".background-projects/div").map do |project|
-        project = project.at("div")
-
+      @projects ||= @page.search("#projects .project").map do |project|
         p = {}
-        start_date, end_date = project.at(".projects-date").text.gsub(/\s+|\n/, " ").strip.split(" – ") rescue nil
+        start_date, end_date = project.at("date-range").text.gsub(/\s+|\n/, " ").strip.split(" – ") rescue nil
 
-        p[:title] = project.at("hgroup/h4 span:first-of-type").text rescue nil
-        p[:link] =  project.at("hgroup/h4 a:first-of-type")['href'] rescue nil
+        p[:title] = project.at(".item-title").text
+        p[:link] =  CGI.parse(URI.parse(project.at(".item-title a")['href']).query)["url"][0] rescue nil
         p[:start_date] = parse_date(start_date) rescue nil
         p[:end_date] = parse_date(end_date)  rescue nil
         p[:description] = project.at(".description").text rescue nil
-        p[:associates] = project.at(".associated-list ul").children.map{ |c| c.at("a").text } rescue nil
+        p[:associates] = project.search(".contributors .contributor").map{ |c| c.at("a").text } rescue nil
         p
       end
     end
