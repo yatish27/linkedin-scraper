@@ -200,7 +200,7 @@ module Linkedin
         start_date, end_date = node.at(".meta").text.strip.split(" – ") rescue nil
         company[:duration] = node.at(".meta").text[/.*\((.*)\)/, 1]
         company[:start_date] = parse_date(start_date) rescue nil
-        if end_date.match(/Present/)
+        if end_date && end_date.match(/Present/)
           company[:end_date] = "Present"
         else
           company[:start_date] = parse_date(end_date) rescue nil
