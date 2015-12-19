@@ -99,7 +99,7 @@ module Linkedin
         major = item.search('h5').last.at('.major').text.gsub(/\s+|\n/, ' ').strip if item.search('h5').last.at('.major')
         period = item.at('.date-range').text.gsub(/\s+|\n/, ' ').strip if item.at('.date-range')
         start_date, end_date = item.at('.date-range').text.gsub(/\s+|\n/, ' ').strip.split(' – ') rescue nil
-        { name: name, description: desc, degree: degree, major: major, period: period, start_date: start_date, end_date: end_date }
+        { :name => name, :description => desc, :degree => degree, :major => major, :period => period, :start_date => start_date, :end_date => end_date }
       end
     end
 
@@ -114,7 +114,7 @@ module Linkedin
       @groups ||= @page.search('#groups .group .item-title').map do |item|
         name = item.text.gsub(/\s+|\n/, ' ').strip
         link = item.at('a')['href']
-        { name: name, link: link }
+        { :name => name, :link => link }
       end
     end
 
@@ -124,7 +124,7 @@ module Linkedin
         start_date, end_date = item.at('.organizations-date').text.gsub(/\s+|\n/, ' ').strip.split(' – ') rescue nil
         start_date = Date.parse(start_date) rescue nil
         end_date = Date.parse(end_date) rescue nil
-        { name: name, start_date: start_date, end_date: end_date }
+        { :name => name, :start_date => start_date, :end_date => end_date }
       end
     end
 
@@ -132,7 +132,7 @@ module Linkedin
       @languages ||= @page.search('.background-languages #languages ol li').map do |item|
         language = item.at('h4').text rescue nil
         proficiency = item.at('div.languages-proficiency').text.gsub(/\s+|\n/, ' ').strip rescue nil
-        { language: language, proficiency: proficiency }
+        { :language => language, :proficiency => proficiency }
       end
     end
 
@@ -142,7 +142,7 @@ module Linkedin
         authority  = item.at('h5').text.gsub(/\s+|\n/, ' ').strip rescue nil
         license    = item.at('.specifics/.licence-number').text.gsub(/\s+|\n/, ' ').strip rescue nil
         start_date = item.at('.certification-date').text.gsub(/\s+|\n/, ' ').strip rescue nil
-        { name: name, authority: authority, license: license, start_date: start_date }
+        { :name => name, :authority => authority, :license => license, :start_date => start_date }
       end
     end
 
@@ -222,7 +222,7 @@ module Linkedin
     end
 
     def find_company_details(link)
-      result = { linkedin_company_url: find_linkedin_company_url(link) }
+      result = { :linkedin_company_url => find_linkedin_company_url(link) }
       page = http_client.get(result[:linkedin_company_url])
 
       result[:url] = page.at('.basic-info-about/ul/li/p/a').text if page.at('.basic-info-about/ul/li/p/a')
