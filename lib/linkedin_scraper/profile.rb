@@ -2,7 +2,7 @@
 module Linkedin
   class Profile
 
-    USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac FireFox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
+    USER_AGENTS = ["Windows IE 6", "Windows IE 7", "Windows Mozilla", "Mac Safari", "Mac Firefox", "Mac Mozilla", "Linux Mozilla", "Linux Firefox", "Linux Konqueror"]
     ATTRIBUTES = %w(
     name
     first_name
@@ -243,7 +243,7 @@ module Linkedin
       Mechanize.new do |agent|
         agent.user_agent_alias = USER_AGENTS.sample
         unless @options.empty?
-          agent.set_proxy(@options[:proxy_ip], @options[:proxy_port])
+          agent.set_proxy(@options[:proxy_ip], @options[:proxy_port], @options[:username], @options[:password])
         end
         agent.max_history = 0
       end

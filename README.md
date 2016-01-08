@@ -27,7 +27,7 @@ Initialize a scraper instance
 
 With a http web-proxy:
 
-    profile = Linkedin::Profile.get_profile("http://www.linkedin.com/in/jeffweiner08", {:proxy_ip=>'127.0.0.1',:proxy_port=>'3128'})
+    profile = Linkedin::Profile.get_profile("http://www.linkedin.com/in/jeffweiner08", {:proxy_ip=>'127.0.0.1',:proxy_port=>'3128', :username=>"user", :password=>'pass'})
 
 
 The returning object responds to the following methods
@@ -264,7 +264,7 @@ For current and past companies it also provides the details of the companies lik
 The gem also comes with a binary and can be used from the command line to get a json response of the scraped data.
 It takes the url as the first argument.
 
-    linkedin-scraper http://www.linkedin.com/in/jeffweiner08
+    linkedin-scraper http://www.linkedin.com/in/jeffweiner08 127.0.0.1 3128 username password
 
 ## Contributing
 
