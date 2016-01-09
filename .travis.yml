@@ -1,5 +1,11 @@
 language: ruby
+before_install:
+  - openssl aes-256-cbc -k "$SECRET_STUFF" -in config/travis-ci4myself-1293b40af30d.p12.enc -out config/travis-ci4myself-1293b40af30d.p12 -d -a
+  - gem update --system
+  - gem install bundler
+install: bundle install
 rvm:
+  - 2.3.0	
   - 2.2.0
   - 2.0.0
   - 1.9.3
