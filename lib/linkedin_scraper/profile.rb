@@ -101,7 +101,7 @@ module Linkedin
     end
 
     def skills
-      @skills ||= (@page.search(".pills .skill").map { |skill| skill.text.strip if skill.text } rescue nil)
+      @skills ||= (@page.search(".pills .skill:not(.see-less)").map { |skill| skill.text.strip if skill.text } rescue nil)
     end
 
     def past_companies
