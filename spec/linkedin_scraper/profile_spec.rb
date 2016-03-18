@@ -47,6 +47,10 @@ describe Linkedin::Profile do
     it "returns list of profile's skills" do
       expect(profile.skills).to include("Product Development")
     end
+
+    it 'does not return "See less"' do
+      expect(profile.skills).not_to include("See less")
+    end
   end
 
   describe '#websites' do
