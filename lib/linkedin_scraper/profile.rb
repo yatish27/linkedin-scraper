@@ -185,7 +185,7 @@ module Linkedin
     def projects
       @projects ||= @page.search("#projects .project").map do |project|
         p = {}
-        start_date, end_date = project.at("date-range").text.gsub(/\s+|\n/, " ").strip.split(" – ") rescue nil
+        start_date, end_date = project.at(".date-range").text.gsub(/\s+|\n/, " ").strip.split(" – ") rescue nil
 
         p[:title] = project.at(".item-title").text
         p[:link] =  CGI.parse(URI.parse(project.at(".item-title a")['href']).query)["url"][0] rescue nil
