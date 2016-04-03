@@ -212,10 +212,12 @@ module Linkedin
       end
 
       @page.search(".positions .position").each do |node|
+        byebug
         company = {}
         company[:title] = node.at(".item-title").text.gsub(/\s+|\n/, " ").strip if node.at(".item-title")
         company[:company] = node.at(".item-subtitle").text.gsub(/\s+|\n/, " ").strip if node.at(".item-subtitle")
         company[:description] = node.at(".description").text.gsub(/\s+|\n/, " ").strip if node.at(".description")
+        company[:company_logo] = node.at(".logo a img").first[1] if node.at(".logo")
 
         start_date, end_date = node.at(".date-range").text.strip.split(" – ") rescue nil
         company[:duration] = node.at(".date-range").text[/.*\((.*)\)/, 1]
