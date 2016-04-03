@@ -217,8 +217,8 @@ module Linkedin
         company[:company] = node.at(".item-subtitle").text.gsub(/\s+|\n/, " ").strip if node.at(".item-subtitle")
         company[:description] = node.at(".description").text.gsub(/\s+|\n/, " ").strip if node.at(".description")
 
-        start_date, end_date = node.at(".meta").text.strip.split(" – ") rescue nil
-        company[:duration] = node.at(".meta").text[/.*\((.*)\)/, 1]
+        start_date, end_date = node.at(".date-range").text.strip.split(" – ") rescue nil
+        company[:duration] = node.at(".date-range").text[/.*\((.*)\)/, 1]
         company[:start_date] = parse_date(start_date) rescue nil
 
         if end_date && end_date.match(/Present/)
