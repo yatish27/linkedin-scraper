@@ -215,6 +215,7 @@ module Linkedin
         company = {}
         company[:title] = node.at(".item-title").text.gsub(/\s+|\n/, " ").strip if node.at(".item-title")
         company[:company] = node.at(".item-subtitle").text.gsub(/\s+|\n/, " ").strip if node.at(".item-subtitle")
+        company[:location] = node.at(".location").text if node.at(".location")
         company[:description] = node.at(".description").text.gsub(/\s+|\n/, " ").strip if node.at(".description")
         company[:company_logo] = node.at(".logo a img").first[1] if node.at(".logo")
 
