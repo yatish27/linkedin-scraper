@@ -191,7 +191,7 @@ module Linkedin
         p[:link] =  CGI.parse(URI.parse(project.at(".item-title a")['href']).query)["url"][0] rescue nil
         p[:start_date] = parse_date(start_date) rescue nil
         p[:end_date] = parse_date(end_date)  rescue nil
-        p[:description] = project.at(".description").text rescue nil
+        p[:description] = project.at(".description").children().to_s rescue nil
         p[:associates] = project.search(".contributors .contributor").map{ |c| c.at("a").text } rescue nil
         p
       end
