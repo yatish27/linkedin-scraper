@@ -212,7 +212,6 @@ module Linkedin
       end
 
       @page.search(".positions .position").each do |node|
-        byebug
         company = {}
         company[:title] = node.at(".item-title").text.gsub(/\s+|\n/, " ").strip if node.at(".item-title")
         company[:company] = node.at(".item-subtitle").text.gsub(/\s+|\n/, " ").strip if node.at(".item-subtitle")
