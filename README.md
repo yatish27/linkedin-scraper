@@ -18,7 +18,8 @@ Install the gem from RubyGems:
 This gem is tested on 1.9.2, 1.9.3, 2.0.0, 2.2, 2.3, JRuby1.9, rbx1.9,
 
 ## Usage
-
+Include the gem
+    require 'linkedin_scraper'
 
 Initialize a scraper instance
 
