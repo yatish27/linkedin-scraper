@@ -66,6 +66,8 @@ The returning object responds to the following methods
 	profile.languages           # Array of languages
 
 	profile.certifications      # Array of certifications
+	
+	profile.courses #Array of instutions containing institution and courses in a hash
 
 	profile.number_of_connections # The number of connections as a string
 
