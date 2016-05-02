@@ -1,4 +1,8 @@
 # -*- encoding: utf-8 -*-
+require 'pry'
+require 'watir-webdriver'
+require 'headless'
+
 module Linkedin
   class Profile
 
@@ -57,7 +61,7 @@ module Linkedin
     def initialize(url, options = {})
       @linkedin_url = url
       @options = options
-      @page = http_client.get(url)
+      @page = http_client_page(url)
     end
 
     def name
@@ -246,10 +250,11 @@ module Linkedin
 
     def get_company_details(link)
       result = { :linkedin_company_url => get_linkedin_company_url(link) }
-      page = http_client.get(result[:linkedin_company_url])
+      page = http_client_page(result[:linkedin_company_url])
 
       result[:url] = page.at(".basic-info-about/ul/li/p/a").text if page.at(".basic-info-about/ul/li/p/a")
       node_2 = page.at(".basic-info-about/ul")
+      
       if node_2
         node_2.search("p").zip(node_2.search("h4")).each do |value, title|
           result[title.text.gsub(" ", "_").downcase.to_sym] = value.text.strip
@@ -259,14 +264,18 @@ module Linkedin
       result
     end
 
-    def http_client
-      Mechanize.new do |agent|
-        agent.user_agent = USER_AGENTS.sample
-        unless @options.empty?
-          agent.set_proxy(@options[:proxy_ip], @options[:proxy_port], @options[:username], @options[:password])
-        end
-        agent.max_history = 0
-      end
+    def http_client_page(url)
+      headless = Headless.new
+headless.start
+      b = Watir::Browser.new :phantomjs
+      b.goto(url)
+      html = b.html
+      b.close
+headless.destroy
+      a = Mechanize.new
+      page = Mechanize::Page.new(nil, {'content-type'=>'text/html'}, html, nil, a)
+      
+      return page
     end
 
     def get_linkedin_company_url(link)
