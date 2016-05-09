@@ -59,12 +59,6 @@ describe Linkedin::Profile do
     end
   end
 
-  describe '#groups' do
-    it "returns list of profile's groups" do
-      p profile.groups
-    end
-  end
-
   describe '#name' do
     it 'returns the first and last name of the profile' do
       expect(profile.name).to eq "Jeff Weiner"
