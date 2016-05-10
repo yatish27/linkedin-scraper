@@ -4,6 +4,8 @@
 Linkedin Scraper
 ================
 
+**2.0.0 is the new version. It does not support the `get_profile` method. It does not support Ruby 1.8**
+
 Linkedin-scraper is a gem for scraping linkedin public profiles.
 Given the URL of the profile, it gets the name, country, title, area, current companies, past companies,
 organizations, skills, groups, etc
@@ -15,7 +17,7 @@ Install the gem from RubyGems:
 
     gem install linkedin-scraper
 
-This gem is tested on 1.9.2, 1.9.3, 2.0.0, 2.2, 2.3, JRuby1.9, rbx1.9,
+This gem is tested on 1.9.2, 1.9.3, 2.0.0, 2.2, 2.3
 
 ## Usage
 Include the gem
@@ -24,13 +26,20 @@ Include the gem
 
 Initialize a scraper instance
 
-    profile = Linkedin::Profile.get_profile("http://www.linkedin.com/in/jeffweiner08")
+    profile = Linkedin::Profile.new("http://www.linkedin.com/in/jeffweiner08")
     
 
 With a http web-proxy:
 
-    profile = Linkedin::Profile.get_profile("http://www.linkedin.com/in/jeffweiner08", {:proxy_ip=>'127.0.0.1',:proxy_port=>'3128', :username=>"user", :password=>'pass'})
+    profile = Linkedin::Profile.new("http://www.linkedin.com/in/jeffweiner08", { proxy_ip: '127.0.0.1', proxy_port: '3128', username: 'user', password: 'pass' })
 
+The scraper can also get the details of each past and current companies. This will lead to multiple hits.
+To enable this functionality, pass `company_details=true` in options. You can pass them along with proxy options
+as well
+
+    profile = Linkedin::Profile.new("http://www.linkedin.com/in/jeffweiner08", { company_details: true })
+
+    profile = Linkedin::Profile.new("http://www.linkedin.com/in/jeffweiner08", { company_details: true, proxy_ip: '127.0.0.1', proxy_port: '3128', username: 'user', password: 'pass' })
 
 The returning object responds to the following methods
 
@@ -71,24 +80,35 @@ The returning object responds to the following methods
 
 
 For current and past companies it also provides the details of the companies like company size, industry, address, etc
+The company details will only be scraped if you pass company_details=true. It is false by default.
+
 
     profile.current_companies
 
     [
-    [0] {
-             :current_company => "LinkedIn",
-               :current_title => "CEO",
-         :current_company_url => "http://www.linkedin.com",
-                 :description => nil,
-        :linkedin_company_url => "http://www.linkedin.com/company/linkedin?trk=ppro_cprof",
-                         :url => "http://www.linkedin.com",
-                        :type => "Public Company",
-                :company_size => "1001-5000 employees",
-                     :website => "http://www.linkedin.com",
-                    :industry => "Internet",
-                     :founded => "2003",
-                     :address => "2029 Stierlin Court  Mountain View, CA 94043 United States"
-    },
+        [0] {
+                           :title => "CEO",
+                         :company => "LinkedIn",
+                    :company_logo => "https://media.licdn.com/media/AAEAAQAAAAAAAAL0AAAAJGMwYWZhNTYxLWJkMTktNDAzMi05NzEzLTlhNzUxMGU0NDg0Mw.png",
+                        :duration => "7 years 6 months",
+                      :start_date => #<Date: 2008-12-01 ((2454802j,0s,0n),+0s,2299161j)>,
+                        :end_date => "Present",
+            :linkedin_company_url => "https://www.linkedin.com/company/linkedin",
+                         :website => "http://www.linkedin.com",
+                     :description => "The future is all about what you do next and we’re excited to help you get there. Ready for your moonshot? You're closer than you think. \r\n\r\nFounded in 2003, LinkedIn connects the world's professionals to make them more productive and successful. With more than 430 million members worldwide, including executives from every Fortune 500 company, LinkedIn is the world's largest professional network on the Internet. The company has a diversified business model with revenue coming from Talent Solutions, Marketing Solutions and Premium Subscriptions products. Headquartered in Silicon Valley, LinkedIn has offices across the globe.",
+                    :company_size => "5001-10,000 employees",
+                            :type => "Public Company",
+                        :industry => "Internet",
+                         :founded => 2003,
+                         :address => "2029 Stierlin Court  Mountain View, CA 94043 United States",
+                         :street1 => "2029 Stierlin Court",
+                         :street2 => "",
+                            :city => "Mountain View",
+                             :zip => "94043",
+                           :state => "CA",
+                         :country => "United States"
+        }
+    ]
     [1] {
              :current_company => "Intuit",
                :current_title => "Member, Board of Directors",
@@ -97,47 +117,9 @@ For current and past companies it also provides the details of the companies lik
         :linkedin_company_url => "http://www.linkedin.com/company/intuit?trk=ppro_cprof",
                          :url => "http://network.intuit.com/",
                         :type => "Public Company",
-                :company_size => "5001-10,000 employees",
-                     :website => "http://network.intuit.com/",
-                    :industry => "Computer Software",
-                     :founded => "1983",
-                     :address => "2632 Marine Way  Mountain View, CA 94043 United States"
-    },
-    [2] {
-             :current_company => "DonorsChoose",
-               :current_title => "Member, Board of Directors",
-         :current_company_url => "http://www.donorschoose.org",
-                 :description => nil,
-        :linkedin_company_url => "http://www.linkedin.com/company/donorschoose.org?trk=ppro_cprof",
-                         :url => "http://www.donorschoose.org",
-                        :type => "Nonprofit",
-                :company_size => "51-200 employees",
-                     :website => "http://www.donorschoose.org",
-                    :industry => "Nonprofit Organization Management",
-                     :founded => "2000",
-                     :address => "213 West 35th Street 2nd Floor East New York, NY 10001 United States"
-    },
-    [3] {
-            :current_company => "Malaria No More",
-              :current_title => "Member, Board of Directors",
-        :current_company_url => nil,
-                :description => nil
-    },
-    [4] {
-             :current_company => "Venture For America",
-               :current_title => "Member, Advisory Board",
-         :current_company_url => "http://ventureforamerica.org/",
-                 :description => nil,
-        :linkedin_company_url => "http://www.linkedin.com/company/venture-for-america?trk=ppro_cprof",
-                         :url => "http://ventureforamerica.org/",
-                        :type => "Nonprofit",
-                :company_size => "1-10 employees",
-                     :website => "http://ventureforamerica.org/",
-                    :industry => "Nonprofit Organization Management",
-                     :founded => "2011"
-    }
-    ]
-
+                        .
+                        .
+                        .
 
     profile.past_companies
     [
@@ -204,7 +186,7 @@ For current and past companies it also provides the details of the companies lik
 
 
     profile.recommended_visitors
-    #It is the list of visitors "Viewers of this profile also viewed..."
+    # It is the list of visitors "Viewers of this profile also viewed..."
     [
     [0] {
            :link => "http://www.linkedin.com/in/barackobama?trk=pub-pbmap",
@@ -264,9 +246,12 @@ For current and past companies it also provides the details of the companies lik
 
 
 The gem also comes with a binary and can be used from the command line to get a json response of the scraped data.
-It takes the url as the first argument.
+It takes the url as the first argument. If the last argument is true it will fetch the company details for each company
 
     linkedin-scraper http://www.linkedin.com/in/jeffweiner08 127.0.0.1 3128 username password
+
+    linkedin-scraper http://www.linkedin.com/in/jeffweiner08 127.0.0.1 3128 username password true
+
 
 ## Contributing
 
