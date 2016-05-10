@@ -254,7 +254,7 @@ module Linkedin
         if headquarters
           result[:address] = %{#{headquarters['street1']} #{headquarters['street2']} #{headquarters['city']}, #{headquarters['state']} #{headquarters['zip']} #{headquarters['country']}}
         end
-        [:street1, :street2, :city, :zip, :state, :country).each do |section|
+        [:street1, :street2, :city, :zip, :state, :country].each do |section|
           result[section] = headquarters[section.to_s]
         end
       end
