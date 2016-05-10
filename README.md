@@ -122,67 +122,7 @@ The company details will only be scraped if you pass company_details=true. It is
                         .
 
     profile.past_companies
-    [
-    [0] {
-                :past_company => "Accel Partners",
-                  :past_title => "Executive in Residence",
-        :past_company_website => "http://www.facebook.com/accel",
-                 :description => nil,
-        :linkedin_company_url => "http://www.linkedin.com/company/accel-partners?trk=ppro_cprof",
-                         :url => "http://www.facebook.com/accel",
-                        :type => "Partnership",
-                :company_size => "51-200 employees",
-                     :website => "http://www.facebook.com/accel",
-                    :industry => "Venture Capital & Private Equity",
-                     :address => "428 University Palo Alto, CA 94301 United States"
-    },
-    [1] {
-                :past_company => "Greylock",
-                  :past_title => "Executive in Residence",
-        :past_company_website => "http://www.greylock.com",
-                 :description => nil,
-        :linkedin_company_url => "http://www.linkedin.com/company/greylock-partners?trk=ppro_cprof",
-                         :url => "http://www.greylock.com",
-                        :type => "Partnership",
-                :company_size => "51-200 employees",
-                     :website => "http://www.greylock.com",
-                    :industry => "Venture Capital & Private Equity",
-                     :address => "2550 Sand Hill Road  Menlo Park, CA 94025 United States"
-    },
-    [2] {
-                :past_company => "Yahoo!",
-                  :past_title => "Executive Vice President Network Division",
-        :past_company_website => "http://www.yahoo.com",
-                 :description => nil,
-        :linkedin_company_url => "http://www.linkedin.com/company/yahoo?trk=ppro_cprof",
-                         :url => "http://www.yahoo.com",
-                        :type => "Public Company",
-                :company_size => "10,001+ employees",
-                     :website => "http://www.yahoo.com",
-                    :industry => "Internet",
-                     :founded => "1994",
-                     :address => "701 First Avenue  Sunnyvale, CA 94089 United States"
-    },
-    [3] {
-                :past_company => "Windsor Media",
-                  :past_title => "Founding Partner",
-        :past_company_website => nil,
-                 :description => nil
-    },
-    [4] {
-                :past_company => "Warner Bros.",
-                  :past_title => "Vice President Online",
-        :past_company_website => "http://www.warnerbros.com/",
-                 :description => nil,
-        :linkedin_company_url => "http://www.linkedin.com/company/warner-bros.-entertainment-group-of-companies?trk=ppro_cprof",
-                         :url => "http://www.warnerbros.com/",
-                        :type => "Public Company",
-                :company_size => "10,001+ employees",
-                     :website => "http://www.warnerbros.com/",
-                    :industry => "Entertainment",
-                     :address => "4000 Warner Boulevard  Burbank, CA 91522 United States"
-    }
-    ]
+    # Same as current companies
 
 
     profile.recommended_visitors
