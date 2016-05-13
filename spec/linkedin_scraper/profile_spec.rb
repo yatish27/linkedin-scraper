@@ -1,7 +1,7 @@
 # encoding: UTF-8
 
 require 'spec_helper'
-require 'linkedin_scraper'
+require 'linkedin-scraper'
 
 describe Linkedin::Profile do
   # This is the HTML of https://www.linkedin.com/in/jeffweiner08
