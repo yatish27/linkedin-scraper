@@ -22,12 +22,12 @@ This gem is tested on 1.9.2, 1.9.3, 2.0.0, 2.2, 2.3
 ## Usage
 Include the gem
 
-    require 'linkedin_scraper'
+    require 'linkedin-scraper'
 
 Initialize a scraper instance
 
     profile = Linkedin::Profile.new("http://www.linkedin.com/in/jeffweiner08")
-    
+
 
 With a http web-proxy:
 
