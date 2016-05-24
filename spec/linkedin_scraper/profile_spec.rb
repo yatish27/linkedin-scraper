@@ -13,6 +13,12 @@ describe Linkedin::Profile do
     end
   end
 
+  describe '#awards' do
+    it "returns profile's awards" do
+      expect(profile.awards.first.values).to include("Some award", "A description of awesome sauce award here")
+    end
+  end
+
   describe "#first_name" do
     it "returns profile's first name" do
       expect(profile.first_name).to eq "Jeff"
