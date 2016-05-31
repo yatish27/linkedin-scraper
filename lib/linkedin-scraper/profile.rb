@@ -2,6 +2,7 @@
 module Linkedin
   class Profile
     ATTRIBUTES = %w(
+      awards
       name
       first_name
       last_name
@@ -31,6 +32,12 @@ module Linkedin
       @linkedin_url = url
       @options = options
       @page = http_client.get(url)
+    end
+
+    def awards
+      if @page.at('#awards')
+        @awards ||= get_awards
+      end
     end
 
     def name
@@ -194,6 +201,23 @@ module Linkedin
     end
 
     private
+    def get_awards
+      if @awards
+        return @awards
+      else
+        @awards = []
+      end
+
+      @page.search('#awards .award').each do |node|
+        award = {}
+        award[:title] = node.at('.item-title').text.gsub(/\s+|\n/, ' ').strip if node.at('.item-title')
+        award[:description] = node.at('.description').text.gsub(/\s+|\n/, ' ').strip if node.at('.description')
+        @awards << award
+      end
+
+      @awards
+    end
+
     def get_companies
       if @companies
         return @companies
