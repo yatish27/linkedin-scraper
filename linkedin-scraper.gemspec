@@ -16,7 +16,6 @@ Gem::Specification.new do |gem|
   gem.license       = "MIT"
 
   gem.add_dependency 'mechanize', '~> 2'
-  gem.add_dependency 'random_user_agent'
 
   gem.add_development_dependency 'rspec', '~> 3'
   gem.add_development_dependency 'rake', '~> 10'

@@ -263,7 +263,7 @@ module Linkedin
 
     def http_client
       @http_client ||= Mechanize.new do |agent|
-        agent.user_agent = RandomUserAgent.randomize
+        agent.user_agent = Linkedin::UserAgent.randomize
         if !@options.empty?
           agent.set_proxy(@options[:proxy_ip], @options[:proxy_port], @options[:username], @options[:password])
         end
