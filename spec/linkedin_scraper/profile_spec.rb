@@ -88,4 +88,18 @@ describe Linkedin::Profile do
       expect(profile.recommended_visitors.class).to eq Array
     end
   end
+
+  describe '#languages' do
+    it "returns list of profile's languages" do
+      expect(profile.languages.size).to eq 2
+    end
+
+    it 'returns Portugués as the first language' do
+      expect(profile.languages.first[:language]).to eq 'Portugués'
+    end
+
+    it 'returns Ingles as the last language' do
+      expect(profile.languages.last[:language]).to eq 'Ingles'
+    end
+  end
 end
