@@ -157,12 +157,11 @@ module Linkedin
     end
 
     def certifications
-      @certifications ||= @page.search('background-certifications').map do |item|
+      @certifications ||= @page.search('#certifications ul li').map do |item|
         name = item.at('h4').text.gsub(/\s+|\n/, ' ').strip rescue nil
-        authority = item.at('h5').text.gsub(/\s+|\n/, ' ').strip rescue nil
-        license = item.at('.specifics/.licence-number').text.gsub(/\s+|\n/, ' ').strip rescue nil
-        start_date = item.at('.certification-date').text.gsub(/\s+|\n/, ' ').strip rescue nil
-
+        authority_with_license = item.at('h5').text.gsub(/\s+|\n/, ' ').strip rescue nil
+        authority, license = authority_with_license.split(/,\sLicense\s/) rescue nil
+        start_date = item.at('time').text.gsub(/\s+|\n/, ' ').strip rescue nil
         { name: name, authority: authority, license: license, start_date: start_date }
       end
     end
