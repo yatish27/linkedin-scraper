@@ -157,7 +157,7 @@ module Linkedin
     end
 
     def certifications
-      @certifications ||= @page.search('background-certifications').map do |item|
+      @certifications ||= @page.search('#certifications').map do |item|
         name = item.at('h4').text.gsub(/\s+|\n/, ' ').strip rescue nil
         authority = item.at('h5').text.gsub(/\s+|\n/, ' ').strip rescue nil
         license = item.at('.specifics/.licence-number').text.gsub(/\s+|\n/, ' ').strip rescue nil
