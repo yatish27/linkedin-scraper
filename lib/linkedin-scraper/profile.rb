@@ -290,6 +290,7 @@ module Linkedin
         if !@options.empty?
           agent.set_proxy(@options[:proxy_ip], @options[:proxy_port], @options[:username], @options[:password])
           agent.open_timeout = @options[:open_timeout]
+          agent.read_timeout = @options[:read_timeout]
         end
         agent.max_history = 0
       end
