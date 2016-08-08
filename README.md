@@ -41,6 +41,12 @@ as well
 
     profile = Linkedin::Profile.new("http://www.linkedin.com/in/jeffweiner08", { company_details: true, proxy_ip: '127.0.0.1', proxy_port: '3128', username: 'user', password: 'pass' })
 
+It's also possible to set number of seconds to wait for the connection to open.
+Scraper will throw exception after given timeout. E. g. to set two seconds long timeout
+pass `open_timeout: 2` in options. Defaults to 60 seconds.
+
+    profile = Linkedin::Profile.new("http://www.linkedin.com/in/jeffweiner08", {open_timeout: 2 })
+
 The returning object responds to the following methods
 
 
