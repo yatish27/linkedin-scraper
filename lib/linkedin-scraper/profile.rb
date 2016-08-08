@@ -88,7 +88,7 @@ module Linkedin
     end
 
     def skills
-      @skills ||= (@page.search('.pills .skill:not(.see-less)').map { |skill| skill.text.strip if skill.text } rescue nil)
+      @skills ||= (@page.search('.pills .skill:not(.see-less):not(.see-more)').map { |skill| skill.text.strip if skill.text } rescue nil)
     end
 
     def past_companies
@@ -289,6 +289,7 @@ module Linkedin
         agent.user_agent = Linkedin::UserAgent.randomize
         if !@options.empty?
           agent.set_proxy(@options[:proxy_ip], @options[:proxy_port], @options[:username], @options[:password])
+          agent.open_timeout = @options[:open_timeout]
         end
         agent.max_history = 0
       end
