@@ -138,7 +138,7 @@ module Linkedin
     end
 
     def recommendations
-      @recommendations ||= (@page.search(".recommendations-listing .description").map { |item| item.text.strip if item.text } rescue nil)
+      @recommendations ||= (@page.search("#recommendations .recommendation").map { |item| item.text.strip if item.text } rescue nil)
     end
 
     def websites

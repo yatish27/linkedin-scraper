@@ -60,12 +60,8 @@ describe Linkedin::Profile do
   end
 
   describe '#websites' do
-    it "returns the array of hashes of profile's websites" do
-      expect(profile.websites.class).to eq Array
-    end
-
-    it "returns first website address" do
-      expect(profile.websites.first).to include(:link => "http://www.linkedin.com/")
+    it "returns list of profile's websites" do
+      expect(profile.websites).to include("http://www.linkedin.com/")
     end
   end
 
