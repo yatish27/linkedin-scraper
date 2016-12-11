@@ -102,4 +102,38 @@ describe Linkedin::Profile do
       expect(profile.languages.last[:language]).to eq 'Ingles'
     end
   end
+
+  describe '#education' do
+    it "returns list of profile's education" do
+      expect(profile.education.class).to eq Array
+    end
+  end
+
+  describe '#volunteering' do
+    it "returns list of profile's volunteering" do
+      expect(profile.volunteering.class).to eq Array
+    end
+  end
+
+  describe '#recommendations' do
+    it "returns list of profile's recommendations" do
+      expect(profile.recommendations.class).to eq Array
+    end
+
+    it "returns first recommendation" do
+      expect(profile.recommendations.first).to include("Jeff Weiner is a mentor to me and a singularly effective champion of DonorsChoose.org.")
+    end
+  end
+
+  describe '#interests' do
+    it "returns list of profile's interests" do
+      expect(profile.interests.class).to eq Array
+    end
+  end
+
+  describe '#publications' do
+    it "returns list of profile's publications" do
+      expect(profile.publications.class).to eq Array
+    end
+  end
 end

@@ -16,11 +16,15 @@ module Linkedin
       projects
       linkedin_url
       education
+      volunteering
+      recommendations
       groups
       websites
       languages
       skills
       certifications
+      interests
+      publications
       organizations
       past_companies
       current_companies
@@ -122,6 +126,21 @@ module Linkedin
       end
     end
 
+    def volunteering
+      @volunteering ||= @page.search('.background-volunteering .experience').map do |item|
+        title = item.at('h4').text.gsub(/\s+|\n/, ' ').strip if item.at('h4')
+        name = item.search('h5').last.text.gsub(/\s+|\n/, ' ').strip if item.search('h5').last
+        description = item.search('.description').text.gsub(/\s+|\n/, ' ').strip if item.search('.description')
+        start_date, end_date = item.at('.volunteering-date-cause').text.gsub(/\s+|\n/, ' ').gsub(item.at('.locality').text.gsub(/\s+|\n/, ' '), '').strip.split(' – ') rescue nil
+        period = [start_date, end_date].join(' - ')
+        {:title => title, :name => name, :description => description, :period => period, :start_date => start_date, :end_date => end_date }
+      end
+    end
+
+    def recommendations
+      @recommendations ||= (@page.search("#recommendations .recommendation").map { |item| item.text.strip if item.text } rescue nil)
+    end
+
     def websites
       @websites ||= @page.search('.websites li').flat_map do |site|
         url = site.at('a')['href']
@@ -166,6 +185,20 @@ module Linkedin
       end
     end
 
+    def interests
+      @interests ||= (@page.search('.interest-item').map { |item| item.text.strip if item.text } rescue nil)
+    end
+
+    def publications
+      @publications ||= @page.search('#background-publications > div').map do |item|
+        title = item.at('h4').text.gsub(/\s+|\n/, ' ').strip if item.at('h4')
+        publisher = item.search('h5').last.text.gsub(/\s+|\n/, ' ').strip if item.search('h5').last
+        date = item.at('.publication-date').text.gsub(/\s+|\n/, ' ').strip if item.at('.publication-date')
+        description = item.search('.description').text.gsub(/\s+|\n/, ' ').strip if item.search('.description')
+
+        {:title => title, :publisher => publisher, :date => date, :description => description }
+      end
+    end
 
     def recommended_visitors
       @recommended_visitors ||= @page.search('.insights .browse-map/ul/li.profile-card').map do |node|

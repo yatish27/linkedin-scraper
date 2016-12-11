@@ -58,7 +58,7 @@ The returning object responds to the following methods
 
     profile.title               # The job title
 
-	profile.summary             # The summary of the profile
+    profile.summary             # The summary of the profile
 
     profile.location            # The location of the contact
 
@@ -74,15 +74,19 @@ The returning object responds to the following methods
 
     profile.education           # Array of hashes for education
 
+    profile.volunteering        # Array of hashes for volunteering
+
     profile.websites            # Array of websites
 
-	profile.groups              # Array of groups
+    profile.groups              # Array of groups
 
-	profile.languages           # Array of languages
+    profile.recommendations     # Array of recommendations
 
-	profile.certifications      # Array of certifications
+    profile.languages           # Array of languages
 
-	profile.number_of_connections # The number of connections as a string
+    profile.certifications      # Array of certifications
+
+  	profile.number_of_connections # The number of connections as a string
 
 
 For current and past companies it also provides the details of the companies like company size, industry, address, etc
