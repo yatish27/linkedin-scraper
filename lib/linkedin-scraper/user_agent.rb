@@ -35,7 +35,7 @@ module Linkedin
           "Mozilla/4.0 (compatible; MSIE 7.0; AOL 9.0; Windows NT 6.1; WOW64; Trident/7.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; HPNTDF; .NET4.0C; tb-gmx/2.6.7; .NET4.0E)",
           "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.5.2623.92 Safari/537.36",
           "Mozilla/5.0 (Windows NT 6.2; WOW64; Trident/7.0; tb-gmx/2.6.6; MAARJS; rv:11.0) like Gecko",
-          "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.4506.2152; .NET4.0C; tb-gmx/2.6.6; (gmx/1.0.0.8))",
+          "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.4506.2152; .NET4.0C; tb-gmx/2.6.6; (gmx/1.0.0.8))"
       ].sample
     end
   end
